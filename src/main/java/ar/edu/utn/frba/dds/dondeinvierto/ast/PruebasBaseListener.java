@@ -2,11 +2,6 @@
 package ar.edu.utn.frba.dds.dondeinvierto.ast;
 
 import ar.edu.utn.frba.dds.dondeinvierto.ast.*;
-import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoParser.CientifContext;
-import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoParser.ExpresionContext;
-import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoParser.NombreCuentaContext;
-import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoParser.NombreIdentificadorContext;
-import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoParser.ParentesisContext;
 import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoSinCodigoJavaListener;
 import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoSinCodigoJavaParser;
 import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoSinCodigoJavaParser.*;
@@ -44,7 +39,8 @@ public class PruebasBaseListener implements DondeInviertoSinCodigoJavaListener {
 	@Override public void exitIdentificador(DondeInviertoSinCodigoJavaParser.IdentificadorContext ctx) {
 //		System.out.println("Exit Identificador: " + ctx.getText());
 //		resultado=Double.parseDouble(ctx.getText());
-		resultado=(double) ctx.expresion.valor;
+//		resultado=(double) ctx.expresion.exp;
+		resultado=(double)ctx.exp.ejecutar();
 	}
 	/**
 	 * {@inheritDoc}

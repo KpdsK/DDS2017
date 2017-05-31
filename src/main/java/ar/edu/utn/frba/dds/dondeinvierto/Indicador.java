@@ -8,7 +8,6 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoSinCodigoJavaLexer;
 import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoSinCodigoJavaParser;
-import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoParser.IdentificadorContext;
 import ar.edu.utn.frba.dds.dondeinvierto.ast.PruebasBaseListener;
 
 public class Indicador implements Operable {

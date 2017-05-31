@@ -23,33 +23,33 @@ metodologia
 	: expresion relop expresion
 	;
 	
-identificador returns [Object valor]
-	: expresion {$valor=(double)$expresion.valor; System.out.println($valor);}
+identificador returns [ExpresionASA exp]
+	: expresion {$exp= new Indicador($expresion.exp);}
 	;
 
-expresion returns [Object valor]
-   : t1=termino {$valor=(double)$t1.valor;}
-   		(SUMA t2=termino {$valor=(double)$valor+(double)$t2.valor;} | RESTA t3=termino {$valor=(double)$valor-(double)$t3.valor;})* 
+expresion returns [ExpresionASA exp]
+   : t1=termino {$exp= $t1.exp;}
+   		(SUMA t2=termino {$exp= new Suma($exp, $t2.exp);} | RESTA t3=termino {$exp= new Resta($exp, $t3.exp);})* 
    ;
 
-termino returns [Object valor]
-	: f1=factor {$valor=(double)$f1.valor;}
-   		(MULT f2= factor {$valor=(double)$valor*(double)$f2.valor;} | DIV f3= factor {$valor=(double)$valor/(double)$f3.valor;})*
+termino returns [ExpresionASA exp]
+	: f1=factor {$exp=$f1.exp;}
+   		(MULT f2= factor {$exp=new Multiplicacion($exp, $f2.exp);} | DIV f3= factor {$exp=new Division($exp, $f3.exp);})*
    ;
 
-factor returns [Object valor]
-   : a1=atom {$valor=(double)$a1.valor;} (POTENCIA a2= atom {$valor=(double)$valor+(double)$a2.valor;})*
+factor returns [ExpresionASA exp]
+   : a1=atom {$exp=$a1.exp;} (POTENCIA a2= atom {$exp=new Potencia($exp, $a2.exp);})*
    ;
 
-atom returns [Object valor]
-   : cientifica {$valor=(double)$cientifica.valor;} #Cientif
-   | NOMBRE_CUENTA {$valor = this.obtenerValor($NOMBRE_CUENTA.getText(), lista);} #NombreCuenta
-   | NOMBRE_INDICADOR {$valor=obtenerValor($NOMBRE_INDICADOR.getText(), lista);} #NombreIdentificacion
-   | LPAREN expresion RPAREN {$valor=(double)$expresion.valor;} #Parentesis
+atom returns [ExpresionASA exp]
+   : cientifica {$exp=$cientifica.exp;} #Cientif
+   | NOMBRE_CUENTA {$exp = new Constante(this.obtenerValor($NOMBRE_CUENTA.getText(), lista));} #NombreCuenta
+   | NOMBRE_INDICADOR {$exp=new Constante(obtenerValor($NOMBRE_INDICADOR.getText(), lista));} #NombreIdentificacion
+   | LPAREN expresion RPAREN {$exp=$expresion.exp;} #Parentesis
    ;
 
-cientifica returns [Object valor]
-   : n1=number {$valor=(double)$n1.valor;} (E n2= number {$valor=(double)$valor * Math.pow(10,(double)$n2.valor);})?
+cientifica returns [ExpresionASA exp]
+   : n1=number {$exp=$n1.exp;} (E n2= number {$exp=new NotacionCientifica($exp, $n2.exp);})?
    ;
 
 relop
@@ -58,8 +58,9 @@ relop
    | LT
    ;
 
-number returns [Object valor]
-	: NUMERO {$valor = Double.parseDouble($NUMERO.getText());}
+number returns [ExpresionASA exp]
+	: NUMERO {$exp = new Constante($NUMERO.text);}
+	//o getText
    ;
    
 NOMBRE_INDICADOR: 'IN_'(LETTER|DIGITO)+
