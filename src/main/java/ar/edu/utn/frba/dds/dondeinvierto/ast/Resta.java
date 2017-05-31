@@ -2,7 +2,7 @@ package ar.edu.utn.frba.dds.dondeinvierto.ast;
 
 public class Resta extends OperacionesBinarias {
 
-	public Resta(NodoAST operador1, NodoAST operador2) {
+	public Resta(ExpresionASA operador1, ExpresionASA operador2) {
 		super(operador1, operador2);
 	}
 

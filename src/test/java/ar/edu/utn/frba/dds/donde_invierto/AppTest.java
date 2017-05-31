@@ -13,7 +13,6 @@ import ar.edu.utn.frba.dds.dondeinvierto.Indicador;
 import ar.edu.utn.frba.dds.dondeinvierto.Operable;
 import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoSinCodigoJavaLexer;
 import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoSinCodigoJavaParser;
-import ar.edu.utn.frba.dds.dondeinvierto.ast.CuentaExpresion;
 import ar.edu.utn.frba.dds.dondeinvierto.ast.PruebasBaseListener;
 import junit.framework.Assert;
 import junit.framework.Test;

@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.dondeinvierto.ast;
 
-public class Identificador implements NodoAST {
+public class Identificador implements ExpresionASA {
 	private String nombreCuenta;
 
 	public Identificador(String nombreCuenta) {
@@ -9,7 +9,7 @@ public class Identificador implements NodoAST {
 	}
 
 	@Override
-	public Object execute() {
+	public Object ejecutar() {
 		return nombreCuenta;
 	}
 }

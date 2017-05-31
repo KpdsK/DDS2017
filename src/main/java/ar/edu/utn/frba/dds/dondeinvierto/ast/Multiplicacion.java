@@ -2,7 +2,7 @@ package ar.edu.utn.frba.dds.dondeinvierto.ast;
 
 public class Multiplicacion extends OperacionesBinarias {
 	
-	public Multiplicacion(NodoAST operador1, NodoAST operador2) {
+	public Multiplicacion(ExpresionASA operador1, ExpresionASA operador2) {
 		super(operador1, operador2);
 	}
 

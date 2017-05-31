@@ -2,7 +2,7 @@ package ar.edu.utn.frba.dds.dondeinvierto.ast;
 
 public class Suma extends OperacionesBinarias {
 	
-	public Suma(NodoAST operador1, NodoAST operador2) {
+	public Suma(ExpresionASA operador1, ExpresionASA operador2) {
 		super(operador1, operador2);
 	}
 

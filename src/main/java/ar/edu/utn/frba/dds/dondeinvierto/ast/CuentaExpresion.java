@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.dondeinvierto.ast;
 
-public class CuentaExpresion implements NodoAST {
+public class CuentaExpresion implements ExpresionASA {
 	private String nombreCuenta;
 
 	public CuentaExpresion(String nombreCuenta) {
@@ -9,7 +9,7 @@ public class CuentaExpresion implements NodoAST {
 	}
 
 	@Override
-	public Object execute() {
+	public Object ejecutar() {
 		return 2.9;
 	}
 }
