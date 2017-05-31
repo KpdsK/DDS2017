@@ -114,6 +114,17 @@ extends TestCase
 		Assert.assertEquals(-10.0, evaluarExpresion("2 * -5"), 0.000001);
 		Assert.assertEquals(-0.66, evaluarExpresion("0.33 * -2"), 0.000001);
 	}
+	public void testDivision() throws IOException
+	{
+		//TODO: Completar casuistica
+		Assert.assertEquals(2.0, evaluarExpresion("6 / 3"), 0.000001);
+		Assert.assertEquals(0.12, evaluarExpresion("0.36 / 3"), 0.000001);
+		Assert.assertEquals(10.0, evaluarExpresion("3 / 0.3"), 0.000001);
+		Assert.assertEquals(3.4, evaluarExpresion("0.34 / 0.1"), 0.000001);
+		Assert.assertEquals(-0.4, evaluarExpresion("-2 / 5"), 0.000001);
+		Assert.assertEquals(-0.4, evaluarExpresion("2 / -5"), 0.000001);
+		Assert.assertEquals(-0.17, evaluarExpresion("0.34 / -2"), 0.000001);
+	}
 	public void testExpresionConCuenta() throws IOException
 	{
 		//TODO: Completar casuistica
@@ -123,6 +134,7 @@ extends TestCase
 		Assert.assertEquals(3.9, evaluarExpresion("1 + CU_valor3", listaDeCuentas), 0.000001);
 		Assert.assertEquals(2.9, evaluarExpresion("1 * CU_valor3", listaDeCuentas), 0.000001);
 		Assert.assertEquals(5.8, evaluarExpresion("1 * CU_valor3 + 2.9", listaDeCuentas), 0.000001);
+		Assert.assertEquals(1.0, evaluarExpresion("1 * CU_valor3 / 2.9", listaDeCuentas), 0.000001);
 	}
 	public void testExpresionConIndicadores() throws IOException
 	{
@@ -133,5 +145,17 @@ extends TestCase
 		Assert.assertEquals(5, evaluarExpresion("1 + IN_valor3", listaDeIndicadores), 0.000001);
 		Assert.assertEquals(4, evaluarExpresion("1 * IN_valor3", listaDeIndicadores), 0.000001);
 		Assert.assertEquals(6.9, evaluarExpresion("1 * IN_valor3 + 2.9", listaDeIndicadores), 0.000001);
+	}
+	public void testExpresionConIndicadoresYCuentas() throws IOException
+	{
+		//TODO: Completar casuistica
+		List<Operable> listaDeIndicadoresYCuentas = new ArrayList<Operable>();
+		Indicador indicador = new Indicador("IN_valor3", "2 + 2");
+		Cuenta cuenta = new Cuenta("CU_valor3", 2.9);
+		listaDeIndicadoresYCuentas.add(indicador);
+		listaDeIndicadoresYCuentas.add(cuenta);
+		Assert.assertEquals(2.1, evaluarExpresion("1 + IN_valor3 - CU_valor3", listaDeIndicadoresYCuentas), 0.000001);
+		Assert.assertEquals(1.1, evaluarExpresion("1 * IN_valor3 - CU_valor3", listaDeIndicadoresYCuentas), 0.000001);
+		Assert.assertEquals(4.0, evaluarExpresion("1 * IN_valor3 + 2.9 - CU_valor3", listaDeIndicadoresYCuentas), 0.000001);
 	}
 }

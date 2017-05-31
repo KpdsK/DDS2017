@@ -29,16 +29,12 @@ identificador returns [Object valor]
 
 expresion returns [Object valor]
    : t1=termino {$valor=(double)$t1.valor;}
-   		(SUMA t2=termino {$valor=(double)$valor+(double)$t2.valor;})* # Suma
-   | t1=termino {$valor=(double)$t1.valor;}
-   		(RESTA t2=termino {$valor=(double)$valor-(double)$t2.valor;})* # Resta
+   		(SUMA t2=termino {$valor=(double)$valor+(double)$t2.valor;} | RESTA t3=termino {$valor=(double)$valor-(double)$t3.valor;})* 
    ;
 
 termino returns [Object valor]
 	: f1=factor {$valor=(double)$f1.valor;}
-   		(MULT f2= factor {$valor=(double)$valor*(double)$f2.valor;})*
-   	| f1=factor {$valor=(double)$f1.valor;}
-   		(DIV f2= factor {$valor=(double)$valor / (double)$f2.valor;})*
+   		(MULT f2= factor {$valor=(double)$valor*(double)$f2.valor;} | DIV f3= factor {$valor=(double)$valor/(double)$f3.valor;})*
    ;
 
 factor returns [Object valor]
@@ -48,8 +44,6 @@ factor returns [Object valor]
 atom returns [Object valor]
    : cientifica {$valor=(double)$cientifica.valor;} #Cientif
    | NOMBRE_CUENTA {$valor = this.obtenerValor($NOMBRE_CUENTA.getText(), lista);} #NombreCuenta
-//   | NOMBRE_CUENTA {$valor = (double) (new CuentaExpresion($NOMBRE_CUENTA.getText())).execute();} #NombreCuenta
-//   {$valor=Double.parseDouble($NOMBRE_CUENTA.getText());} #NombreCuenta
    | NOMBRE_INDICADOR {$valor=obtenerValor($NOMBRE_INDICADOR.getText(), lista);} #NombreIdentificacion
    | LPAREN expresion RPAREN {$valor=(double)$expresion.valor;} #Parentesis
    ;
@@ -66,10 +60,6 @@ relop
 
 number returns [Object valor]
 	: NUMERO {$valor = Double.parseDouble($NUMERO.getText());}
-//   : sig=RESTA? d1=DIGIT {$valor= Double.parseDouble(sig.getText()+d1.getText());}
-//   		(d2=DIGIT {$valor= ((double)$valor * 10) + Double.parseDouble(d2.getText());})* 
-//   		(POINT (d3=DIGIT {$valor = $valor + Double.parseDouble(d3.getText());})+)? 
-//   		 #Numero
    ;
    
 NOMBRE_INDICADOR: 'IN_'(LETTER|DIGITO)+
