@@ -1,10 +1,10 @@
-// Generated from DondeInviertoSinCodigoJava.g4 by ANTLR 4.7
+// Generated from DondeInvierto.g4 by ANTLR 4.7
 package ar.edu.utn.frba.dds.dondeinvierto.ast;
 
 import ar.edu.utn.frba.dds.dondeinvierto.ast.*;
-import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoSinCodigoJavaListener;
-import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoSinCodigoJavaParser;
-import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoSinCodigoJavaParser.*;
+import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoListener;
+import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoParser;
+import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoParser.*;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -15,12 +15,17 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  * which can be extended to create a listener which only needs to handle a subset
  * of the available methods.
  */
-public class PruebasBaseListener implements DondeInviertoSinCodigoJavaListener {
+public class PruebasBaseListener implements DondeInviertoListener {
 	
-	private double resultado;
+	private double resultadoExpresion;
+	private boolean resultadoCondicion;
 	
-	public double getResultado() {
-		return resultado;
+	public double getResultadoExpresion() {
+		return resultadoExpresion;
+	}
+	
+	public boolean getResultadoCondicion() {
+		return resultadoCondicion;
 	}
 
 	/**
@@ -28,7 +33,7 @@ public class PruebasBaseListener implements DondeInviertoSinCodigoJavaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterIdentificador(DondeInviertoSinCodigoJavaParser.IdentificadorContext ctx) { 
+	@Override public void enterIdentificador(DondeInviertoParser.IdentificadorContext ctx) { 
 //		System.out.println("Enter Identificador: " + ctx.getText());
 	}
 	/**
@@ -36,18 +41,18 @@ public class PruebasBaseListener implements DondeInviertoSinCodigoJavaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitIdentificador(DondeInviertoSinCodigoJavaParser.IdentificadorContext ctx) {
+	@Override public void exitIdentificador(DondeInviertoParser.IdentificadorContext ctx) {
 //		System.out.println("Exit Identificador: " + ctx.getText());
 //		resultado=Double.parseDouble(ctx.getText());
 //		resultado=(double) ctx.expresion.exp;
-		resultado=(double)ctx.exp.ejecutar();
+		resultadoExpresion=(double)ctx.exp.ejecutar();
 	}
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMetodologia(DondeInviertoSinCodigoJavaParser.MetodologiaContext ctx) { 
+	@Override public void enterCondicion(DondeInviertoParser.CondicionContext ctx) { 
 //		System.out.println("Enter Metodologia: " + ctx.getText());
 	}
 	/**
@@ -55,15 +60,16 @@ public class PruebasBaseListener implements DondeInviertoSinCodigoJavaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMetodologia(DondeInviertoSinCodigoJavaParser.MetodologiaContext ctx) { 
+	@Override public void exitCondicion(DondeInviertoParser.CondicionContext ctx) { 
 //		System.out.println("Exit Metodologia: " + ctx.getText());
+		resultadoCondicion=(boolean)ctx.exp.ejecutar();
 	}
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterTermino(DondeInviertoSinCodigoJavaParser.TerminoContext ctx) { 
+	@Override public void enterTermino(DondeInviertoParser.TerminoContext ctx) { 
 //		System.out.println("Enter Termino: " + ctx.getText());
 	}
 	/**
@@ -71,7 +77,7 @@ public class PruebasBaseListener implements DondeInviertoSinCodigoJavaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitTermino(DondeInviertoSinCodigoJavaParser.TerminoContext ctx) { 
+	@Override public void exitTermino(DondeInviertoParser.TerminoContext ctx) { 
 //		System.out.println("Exit Termino: " + ctx.getText());
 	}
 	/**
@@ -79,7 +85,7 @@ public class PruebasBaseListener implements DondeInviertoSinCodigoJavaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFactor(DondeInviertoSinCodigoJavaParser.FactorContext ctx) { 
+	@Override public void enterFactor(DondeInviertoParser.FactorContext ctx) { 
 //		System.out.println("Enter Factor: " + ctx.getText());
 	}
 	/**
@@ -87,7 +93,7 @@ public class PruebasBaseListener implements DondeInviertoSinCodigoJavaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFactor(DondeInviertoSinCodigoJavaParser.FactorContext ctx) { 
+	@Override public void exitFactor(DondeInviertoParser.FactorContext ctx) { 
 //		System.out.println("Exit Factor: " + ctx.getText());
 	}
 	/**
@@ -95,7 +101,7 @@ public class PruebasBaseListener implements DondeInviertoSinCodigoJavaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCientifica(DondeInviertoSinCodigoJavaParser.CientificaContext ctx) { 
+	@Override public void enterCientifica(DondeInviertoParser.CientificaContext ctx) { 
 //		System.out.println("Enter Cientifica: " + ctx.getText());
 	}
 	/**
@@ -103,7 +109,7 @@ public class PruebasBaseListener implements DondeInviertoSinCodigoJavaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitCientifica(DondeInviertoSinCodigoJavaParser.CientificaContext ctx) { 
+	@Override public void exitCientifica(DondeInviertoParser.CientificaContext ctx) { 
 //		System.out.println("Exit Cientifica: " + ctx.getText());
 	}
 	/**
@@ -111,7 +117,7 @@ public class PruebasBaseListener implements DondeInviertoSinCodigoJavaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterRelop(DondeInviertoSinCodigoJavaParser.RelopContext ctx) { 
+	@Override public void enterRelop(DondeInviertoParser.RelopContext ctx) { 
 //		System.out.println("Enter Relop: " + ctx.getText());
 	}
 	/**
@@ -119,7 +125,7 @@ public class PruebasBaseListener implements DondeInviertoSinCodigoJavaListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitRelop(DondeInviertoSinCodigoJavaParser.RelopContext ctx) { 
+	@Override public void exitRelop(DondeInviertoParser.RelopContext ctx) { 
 //		System.out.println("Exit Relop: " + ctx.getText());
 	}
 	/**
@@ -176,25 +182,25 @@ public class PruebasBaseListener implements DondeInviertoSinCodigoJavaListener {
 //	}
 
 	@Override
-	public void enterCientif(DondeInviertoSinCodigoJavaParser.CientifContext ctx) {
+	public void enterCientif(DondeInviertoParser.CientifContext ctx) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void exitCientif(DondeInviertoSinCodigoJavaParser.CientifContext ctx) {
+	public void exitCientif(DondeInviertoParser.CientifContext ctx) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void enterNombreCuenta(DondeInviertoSinCodigoJavaParser.NombreCuentaContext ctx) {
+	public void enterNombreCuenta(DondeInviertoParser.NombreCuentaContext ctx) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void exitNombreCuenta(DondeInviertoSinCodigoJavaParser.NombreCuentaContext ctx) {
+	public void exitNombreCuenta(DondeInviertoParser.NombreCuentaContext ctx) {
 		
 	}
 
@@ -211,13 +217,13 @@ public class PruebasBaseListener implements DondeInviertoSinCodigoJavaListener {
 	}
 
 	@Override
-	public void enterParentesis(DondeInviertoSinCodigoJavaParser.ParentesisContext ctx) {
+	public void enterParentesis(DondeInviertoParser.ParentesisContext ctx) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void exitParentesis(DondeInviertoSinCodigoJavaParser.ParentesisContext ctx) {
+	public void exitParentesis(DondeInviertoParser.ParentesisContext ctx) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -236,14 +242,26 @@ public class PruebasBaseListener implements DondeInviertoSinCodigoJavaListener {
 
 	@Override
 	public void enterExpresion(
-			ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoSinCodigoJavaParser.ExpresionContext ctx) {
+			ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoParser.ExpresionContext ctx) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void exitExpresion(
-			ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoSinCodigoJavaParser.ExpresionContext ctx) {
+			ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoParser.ExpresionContext ctx) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void enterOperacionBooleana(OperacionBooleanaContext ctx) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void exitOperacionBooleana(OperacionBooleanaContext ctx) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -1,0 +1,22 @@
+//created on: 23/08/2017
+package reglas
+ 
+import com.sample.DroolsTest.Message;
+//list any import classes here.
+//declare any global variables here
+rule "Hello World"
+    when
+        m : Message( status == Message.HELLO, myMessage : message )
+    then
+        System.out.println( myMessage );
+        m.setMessage( "Goodbye cruel world" );
+        m.setStatus( Message.GOODBYE );
+        update( m );
+end
+
+rule "GoodBye"
+    when
+        Message( status == Message.GOODBYE, myMessage : message )
+    then
+        System.out.println( myMessage );
+end

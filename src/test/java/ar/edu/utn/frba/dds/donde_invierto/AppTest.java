@@ -11,8 +11,8 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import ar.edu.utn.frba.dds.dondeinvierto.Cuenta;
 import ar.edu.utn.frba.dds.dondeinvierto.Indicador;
 import ar.edu.utn.frba.dds.dondeinvierto.Operable;
-import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoSinCodigoJavaLexer;
-import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoSinCodigoJavaParser;
+import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoLexer;
+import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoParser;
 import ar.edu.utn.frba.dds.dondeinvierto.ast.PruebasBaseListener;
 import junit.framework.Assert;
 import junit.framework.Test;
@@ -45,25 +45,36 @@ extends TestCase
 	}
 	
 	private double evaluarExpresion(String expresion, List<Operable> listaCuentas) {
-		DondeInviertoSinCodigoJavaLexer lexer = new DondeInviertoSinCodigoJavaLexer( new ANTLRInputStream(expresion));
+		DondeInviertoLexer lexer = new DondeInviertoLexer( new ANTLRInputStream(expresion));
 		CommonTokenStream tokens = new CommonTokenStream( lexer );
-		DondeInviertoSinCodigoJavaParser parser = new DondeInviertoSinCodigoJavaParser( tokens, listaCuentas);
-		DondeInviertoSinCodigoJavaParser.IdentificadorContext tree = parser.identificador();
+		DondeInviertoParser parser = new DondeInviertoParser( tokens, listaCuentas);
+		DondeInviertoParser.IdentificadorContext tree = parser.identificador();
 		ParseTreeWalker walker = new ParseTreeWalker();
 		PruebasBaseListener listener = new PruebasBaseListener(); 
 		walker.walk(listener , tree);
-		return listener.getResultado();
+		return listener.getResultadoExpresion();
 	}
 	
 	private double evaluarExpresion(String expresion) {
-		DondeInviertoSinCodigoJavaLexer lexer = new DondeInviertoSinCodigoJavaLexer( new ANTLRInputStream(expresion));
+		DondeInviertoLexer lexer = new DondeInviertoLexer( new ANTLRInputStream(expresion));
 		CommonTokenStream tokens = new CommonTokenStream( lexer );
-		DondeInviertoSinCodigoJavaParser parser = new DondeInviertoSinCodigoJavaParser( tokens );
-		DondeInviertoSinCodigoJavaParser.IdentificadorContext tree = parser.identificador();
+		DondeInviertoParser parser = new DondeInviertoParser( tokens );
+		DondeInviertoParser.IdentificadorContext tree = parser.identificador();
 		ParseTreeWalker walker = new ParseTreeWalker();
 		PruebasBaseListener listener = new PruebasBaseListener(); 
 		walker.walk(listener , tree);
-		return listener.getResultado();
+		return listener.getResultadoExpresion();
+	}
+	
+	private boolean evaluarCondicion(String condicion, List<Operable> listaCuentas) {
+		DondeInviertoLexer lexer = new DondeInviertoLexer( new ANTLRInputStream(condicion));
+		CommonTokenStream tokens = new CommonTokenStream( lexer );
+		DondeInviertoParser parser = new DondeInviertoParser( tokens, listaCuentas);
+		DondeInviertoParser.CondicionContext tree = parser.condicion();
+		ParseTreeWalker walker = new ParseTreeWalker();
+		PruebasBaseListener listener = new PruebasBaseListener(); 
+		walker.walk(listener , tree);
+		return listener.getResultadoCondicion();
 	}
 	
 	/**
@@ -156,5 +167,17 @@ extends TestCase
 		Assert.assertEquals(2.1, evaluarExpresion("1 + IN_valor3 - CU_valor3", listaDeIndicadoresYCuentas), 0.000001);
 		Assert.assertEquals(1.1, evaluarExpresion("1 * IN_valor3 - CU_valor3", listaDeIndicadoresYCuentas), 0.000001);
 		Assert.assertEquals(4.0, evaluarExpresion("1 * IN_valor3 + 2.9 - CU_valor3", listaDeIndicadoresYCuentas), 0.000001);
+	}
+	public void testExpresionDeMetodologiaConOperadorIgualdad() throws IOException
+	{
+		//TODO: Completar casuistica
+		List<Operable> listaDeIndicadoresYCuentas = new ArrayList<Operable>();
+		Indicador indicador = new Indicador("IN_valor3", "2 + 2");
+		Cuenta cuenta = new Cuenta("CU_valor3", 2.9);
+		listaDeIndicadoresYCuentas.add(indicador);
+		listaDeIndicadoresYCuentas.add(cuenta);
+		Assert.assertFalse(evaluarCondicion("1 + IN_valor3 = CU_valor3", listaDeIndicadoresYCuentas));
+		Assert.assertTrue(evaluarCondicion("1 * IN_valor3 >= CU_valor3", listaDeIndicadoresYCuentas));
+		Assert.assertTrue(evaluarCondicion("1 * IN_valor3 = 1.1 +  CU_valor3", listaDeIndicadoresYCuentas));
 	}
 }

@@ -6,8 +6,8 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
-import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoSinCodigoJavaLexer;
-import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoSinCodigoJavaParser;
+import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoLexer;
+import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoParser;
 import ar.edu.utn.frba.dds.dondeinvierto.ast.PruebasBaseListener;
 
 public class Indicador implements Operable {
@@ -31,13 +31,13 @@ public class Indicador implements Operable {
 
 	@Override
 	public double operar(List<Operable> listaOperable) {
-		DondeInviertoSinCodigoJavaLexer lexer = new DondeInviertoSinCodigoJavaLexer( new ANTLRInputStream(expresionIndicador));
+		DondeInviertoLexer lexer = new DondeInviertoLexer( new ANTLRInputStream(expresionIndicador));
 		CommonTokenStream tokens = new CommonTokenStream( lexer );
-		DondeInviertoSinCodigoJavaParser parser = new DondeInviertoSinCodigoJavaParser( tokens, listaOperable);
-		DondeInviertoSinCodigoJavaParser.IdentificadorContext tree = parser.identificador();
+		DondeInviertoParser parser = new DondeInviertoParser( tokens, listaOperable);
+		DondeInviertoParser.IdentificadorContext tree = parser.identificador();
 		ParseTreeWalker walker = new ParseTreeWalker();
 		PruebasBaseListener listener = new PruebasBaseListener(); 
 		walker.walk(listener , tree);
-		return listener.getResultado();
+		return listener.getResultadoExpresion();
 	}
 }
