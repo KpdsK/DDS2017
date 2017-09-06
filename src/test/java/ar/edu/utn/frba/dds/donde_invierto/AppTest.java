@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
@@ -14,6 +16,7 @@ import ar.edu.utn.frba.dds.dondeinvierto.Operable;
 import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoLexer;
 import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoParser;
 import ar.edu.utn.frba.dds.dondeinvierto.ast.PruebasBaseListener;
+import ar.edu.utn.frba.dds.dondeinvierto.jpa.ManejadorPersistencia;
 import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -179,5 +182,51 @@ extends TestCase
 		Assert.assertFalse(evaluarCondicion("1 + IN_valor3 = CU_valor3", listaDeIndicadoresYCuentas));
 		Assert.assertTrue(evaluarCondicion("1 * IN_valor3 >= CU_valor3", listaDeIndicadoresYCuentas));
 		Assert.assertTrue(evaluarCondicion("1 * IN_valor3 = 1.1 +  CU_valor3", listaDeIndicadoresYCuentas));
+	}
+	
+	public void testPersistenciaIndicador()
+	{
+		ar.edu.utn.frba.dds.dondeinvierto.jpa.Indicador indicador = new ar.edu.utn.frba.dds.dondeinvierto.jpa.Indicador();
+	
+		indicador.setExpresion("Dhaka");
+		EntityManager em = ManejadorPersistencia.INSTANCE.getEntityManager();
+		em.getTransaction()
+		.begin();
+		em.persist(indicador);
+		em.getTransaction()
+		.commit();
+		em.close();
+		ManejadorPersistencia.INSTANCE.close();
+	}
+	
+	public void testPersistenciaCuenta()
+	{
+		ar.edu.utn.frba.dds.dondeinvierto.jpa.Cuenta cuenta = new ar.edu.utn.frba.dds.dondeinvierto.jpa.Cuenta();
+	
+		cuenta.setNombre("cuenta")
+		.setValor(3.01);
+		EntityManager em = ManejadorPersistencia.INSTANCE.getEntityManager();
+		em.getTransaction()
+		.begin();
+		em.persist(cuenta);
+		em.getTransaction()
+		.commit();
+		em.close();
+		ManejadorPersistencia.INSTANCE.close();
+	}
+	
+	public void testPersistenciaEmpresa()
+	{
+		ar.edu.utn.frba.dds.dondeinvierto.jpa.Empresa empresa = new ar.edu.utn.frba.dds.dondeinvierto.jpa.Empresa();
+	
+		empresa.setNombre("Empresa");
+		EntityManager em = ManejadorPersistencia.INSTANCE.getEntityManager();
+		em.getTransaction()
+		.begin();
+		em.persist(empresa);
+		em.getTransaction()
+		.commit();
+		em.close();
+		ManejadorPersistencia.INSTANCE.close();
 	}
 }
