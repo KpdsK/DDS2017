@@ -1,0 +1,19 @@
+package myfirstproject.rules
+
+import ar.edu.utn.frba.dds.dondeinvierto.Empresa;
+import ar.edu.utn.frba.dds.dondeinvierto.Operable;
+import ar.edu.utn.frba.dds.dondeinvierto.Indicador;
+import ar.edu.utn.frba.dds.dondeinvierto.Cuenta;
+
+rule "Classify Item - Low Range"
+    when
+        $empresa: Empresa($listaCuentas : getCuentas())
+        
+        List<Operable> listaDeIndicadoresYCuentas = new ArrayList<Operable>();
+		Indicador indicador = new Indicador("IN_valor3", "2 + 2");
+		Cuenta cuenta = new Cuenta("CU_valor3", 2.9);
+		listaDeIndicadoresYCuentas.add(indicador);
+		listaDeIndicadoresYCuentas.add(cuenta);
+    then
+        $i.setCategory(Category.LOW_RANGE);
+end

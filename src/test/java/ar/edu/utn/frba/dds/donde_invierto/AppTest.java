@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.donde_invierto;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -10,9 +11,17 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+
 import ar.edu.utn.frba.dds.dondeinvierto.Cuenta;
+import ar.edu.utn.frba.dds.dondeinvierto.Empresa;
 import ar.edu.utn.frba.dds.dondeinvierto.Indicador;
+import ar.edu.utn.frba.dds.dondeinvierto.Metodologia;
 import ar.edu.utn.frba.dds.dondeinvierto.Operable;
+import ar.edu.utn.frba.dds.dondeinvierto.Regla;
+import ar.edu.utn.frba.dds.dondeinvierto.ReglaBooleana;
+import ar.edu.utn.frba.dds.dondeinvierto.ReglaPorRatio;
+import ar.edu.utn.frba.dds.dondeinvierto.ResultadoRegla;
 import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoLexer;
 import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoParser;
 import ar.edu.utn.frba.dds.dondeinvierto.ast.PruebasBaseListener;
@@ -184,49 +193,161 @@ extends TestCase
 		Assert.assertTrue(evaluarCondicion("1 * IN_valor3 = 1.1 +  CU_valor3", listaDeIndicadoresYCuentas));
 	}
 	
-	public void testPersistenciaIndicador()
+	public void testExpresionDeMetodologiaIndicadorConCuenta() throws IOException
 	{
-		ar.edu.utn.frba.dds.dondeinvierto.jpa.Indicador indicador = new ar.edu.utn.frba.dds.dondeinvierto.jpa.Indicador();
-	
-		indicador.setExpresion("Dhaka");
-		EntityManager em = ManejadorPersistencia.INSTANCE.getEntityManager();
-		em.getTransaction()
-		.begin();
-		em.persist(indicador);
-		em.getTransaction()
-		.commit();
-		em.close();
-		ManejadorPersistencia.INSTANCE.close();
+		//TODO: Completar casuistica
+		List<Operable> listaDeIndicadoresYCuentas = new ArrayList<Operable>();
+		Cuenta cuenta = new Cuenta("CU_valor3", 2.9);
+		Indicador indicador = new Indicador("IN_valor3", "CU_valor3 + 2");
+		listaDeIndicadoresYCuentas.add(indicador);
+		listaDeIndicadoresYCuentas.add(cuenta);
+		Assert.assertFalse(evaluarCondicion("1 + IN_valor3 = CU_valor3", listaDeIndicadoresYCuentas));
+		Assert.assertTrue(evaluarCondicion("1 * IN_valor3 >= CU_valor3", listaDeIndicadoresYCuentas));
+		Assert.assertTrue(evaluarCondicion("1 * IN_valor3 = 2 +  CU_valor3", listaDeIndicadoresYCuentas));
 	}
 	
-	public void testPersistenciaCuenta()
+//	public void testPersistenciaIndicador()
+//	{
+//		ar.edu.utn.frba.dds.dondeinvierto.jpa.Indicador indicador = new ar.edu.utn.frba.dds.dondeinvierto.jpa.Indicador();
+//	
+//		indicador.setExpresion("Dhaka");
+//		EntityManager em = ManejadorPersistencia.INSTANCE.getEntityManager();
+//		em.getTransaction()
+//		.begin();
+//		em.persist(indicador);
+//		em.getTransaction()
+//		.commit();
+//		em.close();
+//		ManejadorPersistencia.INSTANCE.close();
+//	}
+//	
+//	public void testPersistenciaCuenta()
+//	{
+//		ar.edu.utn.frba.dds.dondeinvierto.jpa.Cuenta cuenta = new ar.edu.utn.frba.dds.dondeinvierto.jpa.Cuenta();
+//	
+//		cuenta.setNombre("cuenta")
+//		.setValor(3.01);
+//		EntityManager em = ManejadorPersistencia.INSTANCE.getEntityManager();
+//		em.getTransaction()
+//		.begin();
+//		em.persist(cuenta);
+//		em.getTransaction()
+//		.commit();
+//		em.close();
+//		ManejadorPersistencia.INSTANCE.close();
+//	}
+//	
+//	public void testPersistenciaEmpresa()
+//	{
+//		ar.edu.utn.frba.dds.dondeinvierto.jpa.Empresa empresa = new ar.edu.utn.frba.dds.dondeinvierto.jpa.Empresa();
+//	
+//		empresa.setNombre("Empresa");
+//		EntityManager em = ManejadorPersistencia.INSTANCE.getEntityManager();
+//		em.getTransaction()
+//		.begin();
+//		em.persist(empresa);
+//		em.getTransaction()
+//		.commit();
+//		em.close();
+//		ManejadorPersistencia.INSTANCE.close();
+//	}
+	public void testMetodologiaConReglaBooleanaCumplida() throws IOException
 	{
-		ar.edu.utn.frba.dds.dondeinvierto.jpa.Cuenta cuenta = new ar.edu.utn.frba.dds.dondeinvierto.jpa.Cuenta();
-	
-		cuenta.setNombre("cuenta")
-		.setValor(3.01);
-		EntityManager em = ManejadorPersistencia.INSTANCE.getEntityManager();
-		em.getTransaction()
-		.begin();
-		em.persist(cuenta);
-		em.getTransaction()
-		.commit();
-		em.close();
-		ManejadorPersistencia.INSTANCE.close();
+		//TODO: Completar casuistica
+		List<Cuenta> cuentas= Arrays.asList(new Cuenta("CU_valor3", 2.9, 2017), new Cuenta("CU_valor3", 1, 2016));
+		Empresa empresa = new Empresa(cuentas, "empresa1", 2);
+		List<Regla> reglas = Arrays.asList(new ReglaBooleana("1 + IN_valor3 - CU_valor3 > 2", 0, Arrays.asList(new Indicador("IN_valor3", "2 + 2"))));
+		Assert.assertTrue((new Metodologia(Arrays.asList(empresa), "M1", reglas)).ejecutar().size()==1);
+		Assert.assertEquals(0.0, (new Metodologia(Arrays.asList(empresa), "M1", reglas)).ejecutar().get(0).getRatio(), 0.000001);
+		Assert.assertTrue((new Metodologia(Arrays.asList(empresa), "M1", reglas)).ejecutar().get(0).getEmpresa().equals(empresa));
 	}
-	
-	public void testPersistenciaEmpresa()
+	public void testMetodologiaConReglaBooleanaNoCumplida() throws IOException
 	{
-		ar.edu.utn.frba.dds.dondeinvierto.jpa.Empresa empresa = new ar.edu.utn.frba.dds.dondeinvierto.jpa.Empresa();
-	
-		empresa.setNombre("Empresa");
-		EntityManager em = ManejadorPersistencia.INSTANCE.getEntityManager();
-		em.getTransaction()
-		.begin();
-		em.persist(empresa);
-		em.getTransaction()
-		.commit();
-		em.close();
-		ManejadorPersistencia.INSTANCE.close();
+		//TODO: Completar casuistica
+		List<Cuenta> cuentas= Arrays.asList(new Cuenta("CU_valor3", 2.9, 2017), new Cuenta("CU_valor3", 1, 2016));
+		Empresa empresa = new Empresa(cuentas, "empresa1", 2);
+		List<Regla> reglas = Arrays.asList(new ReglaBooleana("1 + IN_valor3 - CU_valor3 > 22", 0, Arrays.asList(new Indicador("IN_valor3", "2 + 2"))));
+		Assert.assertTrue((new Metodologia(Arrays.asList(empresa), "M1", reglas)).ejecutar().size()==0);
+	}
+	public void testMetodologiaConReglasBooleanasCumplidas() throws IOException
+	{
+		//TODO: Completar casuistica
+		List<Cuenta> cuentas= Arrays.asList(new Cuenta("CU_valor3", 2.9, 2017), new Cuenta("CU_valor3", 1, 2016));
+		Empresa empresa = new Empresa(cuentas, "empresa1", 2);
+		List<Regla> reglas = Arrays.asList(
+				new ReglaBooleana("1 + IN_valor3 - CU_valor3 > 2", 0, Arrays.asList(new Indicador("IN_valor3", "2 + 2"))),
+				new ReglaBooleana("1 + IN_valor3 > 1", 0, Arrays.asList(new Indicador("IN_valor3", "2 + 2")))
+				);
+		Assert.assertTrue((new Metodologia(Arrays.asList(empresa), "M1", reglas)).ejecutar().size()==1);
+		Assert.assertEquals(0.0, (new Metodologia(Arrays.asList(empresa), "M1", reglas)).ejecutar().get(0).getRatio(), 0.000001);
+		Assert.assertTrue((new Metodologia(Arrays.asList(empresa), "M1", reglas)).ejecutar().get(0).getEmpresa().equals(empresa));
+	}
+	public void testMetodologiaConReglasBooleanasParcialmenteCumplidas() throws IOException
+	{
+		//TODO: Completar casuistica
+		List<Cuenta> cuentas= Arrays.asList(new Cuenta("CU_valor3", 2.9, 2017), new Cuenta("CU_valor3", 1, 2016));
+		Empresa empresa = new Empresa(cuentas, "empresa1", 2);
+		List<Regla> reglas = Arrays.asList(
+				new ReglaBooleana("1 + IN_valor3 - CU_valor3 > 2", 0, Arrays.asList(new Indicador("IN_valor3", "2 + 2"))),
+				new ReglaBooleana("1 + IN_valor3 > 12", 0, Arrays.asList(new Indicador("IN_valor3", "2 + 2")))
+				);
+		Assert.assertTrue((new Metodologia(Arrays.asList(empresa), "M1", reglas)).ejecutar().size()==0);
+	}
+	public void testMetodologiaConReglaBooleanaCumplidaPara2Balances() throws IOException
+	{
+		//TODO: Completar casuistica
+		List<Cuenta> cuentas= Arrays.asList(new Cuenta("CU_valor3", 2.9, 2017), new Cuenta("CU_valor3", 1, 2016));
+		Empresa empresa = new Empresa(cuentas, "empresa1", 2);
+		List<Regla> reglas = Arrays.asList(new ReglaBooleana("1 + IN_valor3 - CU_valor3 > 2", 1, Arrays.asList(new Indicador("IN_valor3", "2 + 2"))));
+		Assert.assertTrue((new Metodologia(Arrays.asList(empresa), "M1", reglas)).ejecutar().size()==1);
+		Assert.assertEquals(0.0, (new Metodologia(Arrays.asList(empresa), "M1", reglas)).ejecutar().get(0).getRatio(), 0.000001);
+		Assert.assertTrue((new Metodologia(Arrays.asList(empresa), "M1", reglas)).ejecutar().get(0).getEmpresa().equals(empresa));
+	}
+	public void testMetodologiaConReglaBooleanaNoCumplidaPara2Balances() throws IOException
+	{
+		//TODO: Completar casuistica
+		List<Cuenta> cuentas= Arrays.asList(new Cuenta("CU_valor3", 2.9, 2017), new Cuenta("CU_valor3", 1, 2016));
+		Empresa empresa = new Empresa(cuentas, "empresa1", 2);
+		List<Regla> reglas = Arrays.asList(new ReglaBooleana("1 + IN_valor3 - CU_valor3 < 2.3", 1, Arrays.asList(new Indicador("IN_valor3", "2 + 2"))));
+		Assert.assertTrue((new Metodologia(Arrays.asList(empresa), "M1", reglas)).ejecutar().size()==0);
+	}
+	public void testMetodologiaConReglaPorRatioCumplida() throws IOException
+	{
+		//TODO: Completar casuistica
+		List<Cuenta> cuentas= Arrays.asList(new Cuenta("CU_valor3", 2.9, 2017), new Cuenta("CU_valor3", 1, 2016));
+		Empresa empresa = new Empresa(cuentas, "empresa1", 2);
+		List<Regla> reglas = Arrays.asList(new ReglaPorRatio("1 + IN_valor3 - CU_valor3", 0, Arrays.asList(new Indicador("IN_valor3", "2 + 2"))));
+		Assert.assertTrue((new Metodologia(Arrays.asList(empresa), "M1", reglas)).ejecutar().size()==1);
+		Assert.assertEquals(2.1, (new Metodologia(Arrays.asList(empresa), "M1", reglas)).ejecutar().get(0).getRatio(), 0.000001);
+		Assert.assertTrue((new Metodologia(Arrays.asList(empresa), "M1", reglas)).ejecutar().get(0).getEmpresa().equals(empresa));
+	}
+	public void testMetodologiaConReglaPorRatioNoCumplida() throws IOException
+	{
+		//TODO: Completar casuistica
+		List<Cuenta> cuentas= Arrays.asList(new Cuenta("CU_valor3", 2.9, 2017), new Cuenta("CU_valor3", 1, 2016));
+		Empresa empresa = new Empresa(cuentas, "empresa1", 2);
+		Empresa empresa2 = new Empresa(Arrays.asList(new Cuenta("CU_valor3", 1.9, 2017), new Cuenta("CU_valor3", 1, 2016))
+				, "empresa2", 2);
+		List<Regla> reglas = Arrays.asList(new ReglaPorRatio("1 + IN_valor3 - CU_valor3", 0, Arrays.asList(new Indicador("IN_valor3", "2 + 2"))));
+		List<ResultadoRegla> resultado =(new Metodologia(Arrays.asList(empresa, empresa2), "M1", reglas)).ejecutar();
+		Assert.assertTrue(resultado.size()==2);
+		Assert.assertEquals(3.1, resultado.get(0).getRatio(), 0.000001);
+		Assert.assertEquals(2.1, resultado.get(1).getRatio(), 0.000001);
+		Assert.assertTrue(resultado.get(0).getEmpresa().equals(empresa2));
+	}
+	public void testMetodologiaConReglaPorRatioYBooleanaCumplida() throws IOException
+	{
+		//TODO: Completar casuistica
+		List<Cuenta> cuentas= Arrays.asList(new Cuenta("CU_valor3", 2.9, 2017), new Cuenta("CU_valor3", 1, 2016));
+		Empresa empresa = new Empresa(cuentas, "empresa1", 2);
+		Empresa empresa2 = new Empresa(Arrays.asList(new Cuenta("CU_valor3", 3.9, 2017), new Cuenta("CU_valor3", 1, 2016))
+				, "empresa2", 2);
+		List<Regla> reglas = Arrays.asList(new ReglaBooleana("1 + IN_valor3 - CU_valor3 > 2", 0, Arrays.asList(new Indicador("IN_valor3", "2 + 2"))),
+				new ReglaPorRatio("1 + IN_valor3 - CU_valor3", 0, Arrays.asList(new Indicador("IN_valor3", "2 + 2"))));
+		List<ResultadoRegla> resultado =(new Metodologia(Arrays.asList(empresa, empresa2), "M1", reglas)).ejecutar();
+		
+		Assert.assertTrue(resultado.size()==1);
+		Assert.assertEquals(2.1, resultado.get(0).getRatio(), 0.000001);
+		Assert.assertTrue(resultado.get(0).getEmpresa().equals(empresa));
 	}
 }

@@ -55,6 +55,11 @@
       		<artifactId>drools-compiler</artifactId>
       		<scope>runtime</scope>
     	</dependency>
+    	        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-core</artifactId>
+            <type>jar</type>
+        </dependency>
 <dependency>
             <groupId>org.uqbar-project</groupId>
             <artifactId>jpa-java8-extras</artifactId>

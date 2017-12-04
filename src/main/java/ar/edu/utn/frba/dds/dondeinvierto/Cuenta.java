@@ -5,6 +5,7 @@ import java.util.List;
 public class Cuenta implements Operable {
 	private double valor;
 	private String nombre;
+	private int anio;
 	
 	public Cuenta(String nombre, double valor) {
 		super();
@@ -12,6 +13,13 @@ public class Cuenta implements Operable {
 		this.nombre = nombre;
 	}
 
+	public Cuenta(String nombre, double valor, int anio) {
+		super();
+		this.valor = valor;
+		this.nombre = nombre;
+		this.anio = anio;
+	}
+	
 	public double getValor() {
 		return valor;
 	}
@@ -20,6 +28,10 @@ public class Cuenta implements Operable {
 		return nombre;
 	}
 
+	public int getAnio() {
+		return anio;
+	}
+	
 	@Override
 	public double operar(List<Operable> listaOperable) {
 		return getValor();
