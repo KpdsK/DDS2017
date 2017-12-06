@@ -65,5 +65,7 @@
 	<classpathentry kind="var" path="M2_REPO/com/fasterxml/jackson/core/jackson-databind/2.8.7/jackson-databind-2.8.7.jar"/>
 	<classpathentry kind="var" path="M2_REPO/com/fasterxml/jackson/core/jackson-annotations/2.8.0/jackson-annotations-2.8.0.jar"/>
 	<classpathentry kind="var" path="M2_REPO/com/fasterxml/jackson/core/jackson-core/2.8.7/jackson-core-2.8.7.jar"/>
+	<classpathentry kind="lib" path="/home/pablo/.m2/repository/org/pac4j/pac4j-http/2.1.0/pac4j-http-2.1.0.jar"/>
+	<classpathentry kind="lib" path="/home/pablo/.m2/repository/org/pac4j/pac4j-sql/2.1.0/pac4j-sql-2.1.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

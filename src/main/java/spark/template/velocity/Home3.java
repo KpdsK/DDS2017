@@ -3,9 +3,16 @@ package spark.template.velocity;
 import java.util.HashMap;
 import java.util.Map;
 
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.service.ServiceRegistry;
+import org.hibernate.service.ServiceRegistryBuilder;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
+import org.pac4j.http.client.indirect.FormClient;
 import org.pac4j.oauth.profile.facebook.FacebookPicture;
 import org.pac4j.oauth.profile.facebook.FacebookProfile;
 import org.pac4j.sparkjava.CallbackRoute;
@@ -28,7 +35,7 @@ import static spark.Spark.staticFiles;
 /**
  * VelocityTemplateRoute example.
  */
-public final class Home {
+public final class Home3 {
 	private static java.util.List<CommonProfile> getProfiles(final Request request,
 			final Response response) {
 		final SparkWebContext context = new SparkWebContext(request, response);
@@ -77,10 +84,11 @@ public final class Home {
 
 		return model;	
 	}
+	static Configuration configuration = new Configuration().configure();
+    static ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(configuration.getProperties()).buildServiceRegistry();        
+    static SessionFactory sf = configuration.buildSessionFactory(serviceRegistry);
+//	 sf = new Configuration().configure().buildSessionFactory(serviceRegistry);
 	public static void main(String[] args) {
-
-		
-
 
 		HashMap<String,String> envVars = new HashMap<String, String>() {
 			{
@@ -98,6 +106,7 @@ public final class Home {
 						envVars.get("APPLICATION_SALT"),
 						new VelocityTemplateEngine()).build();
 
+		 
 		// directorio donde se encuantran los recursos que usa la webApp (ej.:
 		// html, img, css, bootstrap, templates, etc.)
 		staticFiles.location("/publico"); // Static files
@@ -107,12 +116,15 @@ public final class Home {
 			return new ModelAndView(buildModel(request, response), "login.html"); // located in the resources directory
 		}, new VelocityTemplateEngine());
 
-		before("/loginSocial", new SecurityFilter(config, "FacebookClient"));
+		before("/loginFacebook", new SecurityFilter(config, "FacebookClient"));
 
-		get("/loginSocial",
+		get("/loginFacebook",
 				(request, response) -> { Map<String, Object> model = new HashMap<>();
 				return new ModelAndView(buildModel(request, response), "inicio.html"); // located in the resources directory
 				}, new VelocityTemplateEngine());
+
+		get("/loginDB", Home3::formulario, new VelocityTemplateEngine());
+		post("/loginDB", Home3::formulario, new VelocityTemplateEngine());
 		get("/logout", new LogoutRoute(config, "/ingreso"));
 		get("/inicio", (request, response) -> {
 			Map<String, Object> model = new HashMap<>();
@@ -127,4 +139,18 @@ public final class Home {
 
 	}
 
+	private static ModelAndView formulario(final Request request, final Response response) {
+		Session session = sf.openSession();
+		final Map map = new HashMap();
+		try {
+        	String consulta ="select * FROM users where username='"+request.queryParams("username")+"' and password='"+request.queryParams("password")+"';";
+            if (session.createQuery(consulta).list().size() == 1) {
+            	map.put("name", request.queryParams("username"));
+            	return new ModelAndView(map, "inicio.html");    	
+            }
+        } catch (Exception e) {
+        }
+    	map.put("ingresoInvalido", true);
+		return new ModelAndView(map, "login.html");
+	}
 }
