@@ -15,7 +15,6 @@ import ar.edu.utn.frba.dds.dondeinvierto.ExpresionInvalidaException;
 import ar.edu.utn.frba.dds.dondeinvierto.Operable;
 import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoLexer;
 import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoParser;
-import ar.edu.utn.frba.dds.dondeinvierto.ast.ANTLRErrorListenerPersonalizado;
 
 @Entity
 @Table(name = "indicador")
@@ -47,9 +46,6 @@ public class Indicador {
 		DondeInviertoLexer lexer = new DondeInviertoLexer( new ANTLRInputStream(expresion));
 		CommonTokenStream tokens = new CommonTokenStream( lexer );
 		DondeInviertoParser parser = new DondeInviertoParser( tokens, obtenerCuentasEindicadoresDeUsuario());
-//		parser.removeErrorListeners();
-//		ANTLRErrorListenerPersonalizado erroresSintaxis= new ANTLRErrorListenerPersonalizado();
-//		parser.addErrorListener(erroresSintaxis);
 		DondeInviertoParser.IdentificadorContext tree = parser.identificador();
 		if(parser.getNumberOfSyntaxErrors()>0)
 			throw new ExpresionInvalidaException();

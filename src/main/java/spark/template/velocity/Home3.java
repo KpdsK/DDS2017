@@ -14,6 +14,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
+import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.credentials.UsernamePasswordCredentials;
 import org.pac4j.core.credentials.password.PasswordEncoder;
@@ -23,6 +24,7 @@ import org.pac4j.core.exception.HttpAction;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.http.client.indirect.FormClient;
+import org.pac4j.oauth.client.FacebookClient;
 import org.pac4j.oauth.client.TwitterClient;
 import org.pac4j.oauth.profile.facebook.FacebookPicture;
 import org.pac4j.oauth.profile.facebook.FacebookProfile;
@@ -80,26 +82,11 @@ public final class Home3 {
 			if (userProfiles.size()>0) {
 				CommonProfile firstProfile = userProfiles.get(0);
 				model.put("firstProfile", firstProfile);	
-
-				FacebookProfile fp = (FacebookProfile) firstProfile;
-				// See: https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/profile/facebook/FacebookProfile.java
-
-				// And: https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/profile/facebook/FacebookPicture.java
-
-				FacebookPicture fbPic = fp.getPicture();
-
-				model.put("fp", fp); 
-				model.put("name",fp.getDisplayName());
-				if (fbPic!=null)
-					model.put("avatar_url",fbPic.getUrl());
-				else
-					model.put("avatar_url","");
-				model.put("email",fp.getEmail()); 
+				model.put("name",firstProfile.getDisplayName());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		return model;	
 	}
 	static Configuration configuration = new Configuration().configure();
@@ -108,31 +95,16 @@ public final class Home3 {
 	//	 sf = new Configuration().configure().buildSessionFactory(serviceRegistry);
 	public static void main(String[] args) {
 
-		HashMap<String,String> envVars = new HashMap<String, String>() {
-			{
-				put("FACEBOOK_CLIENT_ID", "1091856944283517");
-				put("FACEBOOK_CLIENT_SECRET", "4d43d2452ebe853ba63a1095c1a41e75");
-				put("FACEBOOK_CALLBACK_URL", "http://localhost:4567/callback");
-				put("APPLICATION_SALT", "4d43d2452ebe853ba63a1095c1a41e75");
-			}
-		};
-
-		Config config = new
-				FacebookOAuthConfigFactory(envVars.get("FACEBOOK_CLIENT_ID"),
-						envVars.get("FACEBOOK_CLIENT_SECRET"),
-						envVars.get("FACEBOOK_CALLBACK_URL"),
-						envVars.get("APPLICATION_SALT"),
-						new VelocityTemplateEngine()).build();
-
 		// directorio donde se encuantran los recursos que usa la webApp (ej.:
 		// html, img, css, bootstrap, templates, etc.)
 		staticFiles.location("/publico"); // Static files
+		FacebookClient facebookClient = new FacebookClient("1091856944283517", "4d43d2452ebe853ba63a1095c1a41e75");
 		final TwitterClient twitterClient = new TwitterClient("CoxUiYwQOSFDReZYdjigBA", "2kAzunH5Btc4gRSaMr7D7MkyoJ5u1VzbOOzE8rBofs");
-		org.pac4j.core.config.Config configu =
-				new org.pac4j.core.config.Config("http://localhost:4567/callback", twitterClient);
 
-		configu.setHttpActionAdapter(new DemoHttpActionAdapter(new VelocityTemplateEngine()));
-
+		final Clients clients = new Clients("http://localhost:4567/callback", facebookClient, twitterClient);
+		final Config config = new Config(clients);
+		config.setHttpActionAdapter(new DemoHttpActionAdapter(new VelocityTemplateEngine()));
+		
 		get("/ingreso", (request, response) -> {
 			Map<String, Object> model = new HashMap<>();
 			model.put("ingresoValido", true);
@@ -148,15 +120,15 @@ public final class Home3 {
 		before("/loginFacebook", new SecurityFilter(config, "FacebookClient"));
 
 		get("/loginFacebook",
-				(request, response) -> { Map<String, Object> model = new HashMap<>();
+				(request, response) -> { 
 				return new ModelAndView(buildModel(request, response), "publico/pages/inicio.vm"); // located in the resources directory
 				}, new VelocityTemplateEngine());
 
-		before("/loginTwitter", new SecurityFilter(configu, "TwitterClient"));
+		before("/loginTwitter", new SecurityFilter(config, "TwitterClient"));
 
 		get("/loginTwitter",
-				(request, response) -> { Map<String, Object> model = new HashMap<>();
-				return new ModelAndView(new HashMap<String,Object>(), "publico/pages/inicio.vm"); // located in the resources directory
+				(request, response) -> { 
+				return new ModelAndView(buildModel(request, response), "publico/pages/inicio.vm"); // located in the resources directory
 				}, new VelocityTemplateEngine());
 
 		get("/crear-ind",
