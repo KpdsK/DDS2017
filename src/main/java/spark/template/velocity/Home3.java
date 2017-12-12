@@ -124,7 +124,6 @@ public final class Home3 {
 						envVars.get("APPLICATION_SALT"),
 						new VelocityTemplateEngine()).build();
 
-
 		// directorio donde se encuantran los recursos que usa la webApp (ej.:
 		// html, img, css, bootstrap, templates, etc.)
 		staticFiles.location("/publico"); // Static files

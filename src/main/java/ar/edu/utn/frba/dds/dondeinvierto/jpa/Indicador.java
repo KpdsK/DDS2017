@@ -15,6 +15,7 @@ import ar.edu.utn.frba.dds.dondeinvierto.ExpresionInvalidaException;
 import ar.edu.utn.frba.dds.dondeinvierto.Operable;
 import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoLexer;
 import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoParser;
+import ar.edu.utn.frba.dds.dondeinvierto.ast.ANTLRErrorListenerPersonalizado;
 
 @Entity
 @Table(name = "indicador")
@@ -46,6 +47,10 @@ public class Indicador {
 		DondeInviertoLexer lexer = new DondeInviertoLexer( new ANTLRInputStream(expresion));
 		CommonTokenStream tokens = new CommonTokenStream( lexer );
 		DondeInviertoParser parser = new DondeInviertoParser( tokens, obtenerCuentasEindicadoresDeUsuario());
+//		parser.removeErrorListeners();
+//		ANTLRErrorListenerPersonalizado erroresSintaxis= new ANTLRErrorListenerPersonalizado();
+//		parser.addErrorListener(erroresSintaxis);
+		DondeInviertoParser.IdentificadorContext tree = parser.identificador();
 		if(parser.getNumberOfSyntaxErrors()>0)
 			throw new ExpresionInvalidaException();
 		return expresion;
@@ -53,10 +58,10 @@ public class Indicador {
 
 	private List<Operable> obtenerCuentasEindicadoresDeUsuario() {
 		EntityManager em = ManejadorPersistencia.INSTANCE.getEntityManager();
-		List<Indicador> indicadores = em.createQuery("SELECT i FROM indicador i", Indicador.class).getResultList();
-		List<Cuenta> cuentas = em.createQuery("SELECT c FROM cuenta c", Cuenta.class).getResultList();
-		List<Operable> listaOperables = indicadores.stream().map(indicador -> new ar.edu.utn.frba.dds.dondeinvierto.Indicador(indicador.getNombre(), indicador.getExpresion())).collect(Collectors.toList());
-		listaOperables.addAll(cuentas.stream().map(cuenta -> new ar.edu.utn.frba.dds.dondeinvierto.Cuenta(cuenta.getNombre(), cuenta.getValor())).collect(Collectors.toList()));
+		List<Indicador> indicadores = em.createQuery("SELECT i FROM Indicador i", Indicador.class).getResultList();
+		List<Cuenta> cuentas = em.createQuery("SELECT c FROM Cuenta c", Cuenta.class).getResultList();
+		List<Operable> listaOperables = indicadores.stream().map(indicador -> new ar.edu.utn.frba.dds.dondeinvierto.Indicador("IN_"+indicador.getNombre(), indicador.getExpresion())).collect(Collectors.toList());
+		listaOperables.addAll(cuentas.stream().map(cuenta -> new ar.edu.utn.frba.dds.dondeinvierto.Cuenta("CU_"+cuenta.getNombre(), cuenta.getValor())).collect(Collectors.toList()));
 		//		List<String> nombresIndicadores = em.createQuery("SELECT nombre FROM indicador", String.class).getResultList();
 		//		List<String> nombresCuentas = em.createQuery("SELECT nombre FROM cuenta", String.class).getResultList();
 		//		nombresCuentas.addAll(nombresIndicadores);
@@ -66,7 +71,7 @@ public class Indicador {
 	}
 
 	public String getNombre() {
-		return nombre.substring(4);
+		return nombre.substring(3);
 	}
 
 	public Indicador setNombre(String nombre) {
