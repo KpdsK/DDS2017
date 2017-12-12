@@ -18,4 +18,14 @@ public enum ManejadorPersistencia {
 	public void close() {
 		emFactory.close();
 	}
+	
+	public static void persistir(Object obj) {
+		EntityManager em = ManejadorPersistencia.INSTANCE.getEntityManager();
+		em.getTransaction()
+		.begin();
+		em.persist(obj);
+		em.getTransaction()
+		.commit();
+		em.close();
+	}
 }

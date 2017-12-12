@@ -97,10 +97,10 @@
                             <a href="menu.html"><i class="fa fa-table fa-fw"></i> INDICADORES </a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="crear-ind.html">Crear Indicadores</a>
+                                    <a href="/crear-ind">Cargar Indicadores</a>
                                 </li>
                                 <li>
-                                    <a href="consultar-ind.html">Consultar Indicadores</a>
+                                    <a href="/consultar-ind">Consultar Indicadores</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->

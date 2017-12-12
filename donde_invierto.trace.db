@@ -1,0 +1,4 @@
+12-11 21:33:16 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Tabla "USERS" no encontrada
+Table "USERS" not found; SQL statement:
+insert into users (linkedid,password,serializedprofile,id,username) values (?,?,?,?,?) [42102-168]
