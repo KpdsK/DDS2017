@@ -11,8 +11,10 @@ public class Cuenta {
 	  @Id
 	  @GeneratedValue
 	  private Integer id;
-	  private double valor;
 	  private String nombre;
+	  private String empresa;
+	  private String valor;
+	  private String periodo;
 
 	  public Integer getId() {
 	    return id;
@@ -23,11 +25,11 @@ public class Cuenta {
 	    return this;
 	  }
 
-	  public double getValor() {
+	  public String getValor() {
 	    return valor;
 	  }
 	  
-	  public Cuenta setValor(double valor) {
+	  public Cuenta setValor(String valor) {
 		    this.valor = valor;
 		    return this;
 	  }
@@ -40,4 +42,22 @@ public class Cuenta {
 			    this.nombre = nombre;
 			    return this;
 		  }
+
+		public String getEmpresa() {
+			return empresa;
+		}
+
+		public Cuenta setEmpresa(String empresa) {
+			this.empresa = empresa;
+			return this;
+		}
+
+		public String getPeriodo() {
+			return periodo;
+		}
+
+		public Cuenta setPeriodo(String periodo) {
+			this.periodo = periodo;
+			return this;
+		}
 }

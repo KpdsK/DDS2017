@@ -37,6 +37,7 @@ import org.springframework.security.crypto.password.StandardPasswordEncoder;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
+import ar.edu.utn.frba.dds.dondeinvierto.jpa.Cuenta;
 import ar.edu.utn.frba.dds.dondeinvierto.jpa.Indicador;
 import ar.edu.utn.frba.dds.dondeinvierto.jpa.ManejadorPersistencia;
 
@@ -158,10 +159,32 @@ public final class Home3 {
 		    model.put("guardadoExitoso", crearIndicador((String)mapDatos.get("nombre"),(String)mapDatos.get("expresion")));
 		    return new ModelAndView(model, "publico/pages/crear-ind.vm");
 		}, new VelocityTemplateEngine());
+		
+		get("/consultar-cuentas",
+				(request, response) -> { Map<String, Object> model = new HashMap<>();
+				return new ModelAndView(new HashMap<String,Object>(), "publico/pages/consultar-cuentas.vm"); // located in the resources directory
+				}, new VelocityTemplateEngine());
+		post("/guardar-cuenta", (request, response) -> {
+			Map<String, Object> mapDatos =asMap(request.body(),"UTF-8");
+		    Map<String, Object> model = new HashMap<>();
+		    model.put("guardadoExitoso", crearCuenta((String)mapDatos.get("empresa"),(String)mapDatos.get("cuenta"),(String)mapDatos.get("valor"),(String)mapDatos.get("periodo")));
+		    return new ModelAndView(model, "publico/pages/cargar-cuentas.vm");
+		}, new VelocityTemplateEngine());
+		
 		// Manejo de errores de pagina. Using string/html
 		notFound("<html><body><h1>Error 404 no existe la pagina</h1></body></html>");
 	}
 
+	private static boolean crearCuenta(String empresa, String cuenta, String valor, String periodo) {
+		Map<String, Object> map= new HashMap<>();
+		try {
+			ManejadorPersistencia.persistir(new Cuenta().setEmpresa(empresa).setNombre(cuenta).setValor(valor).setPeriodo(periodo));
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+	
 	private static boolean crearIndicador(String nombre, String expresion) {
 		Map<String, Object> map= new HashMap<>();
 		try {
