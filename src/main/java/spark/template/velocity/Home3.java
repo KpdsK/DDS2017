@@ -40,6 +40,7 @@ import org.springframework.security.crypto.password.StandardPasswordEncoder;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
+import ar.edu.utn.frba.dds.dondeinvierto.jpa.Metodologia;
 import ar.edu.utn.frba.dds.dondeinvierto.jpa.Indicador;
 import ar.edu.utn.frba.dds.dondeinvierto.jpa.ManejadorPersistencia;
 
@@ -143,6 +144,15 @@ public final class Home3 {
 				(request, response) -> {
 				return new ModelAndView(obtenerDatosParaTablaIndicadores(), "publico/pages/consultar-ind.vm"); // located in the resources directory
 				}, new VelocityTemplateEngine());
+		get("/crear-met",
+				(request, response) -> { Map<String, Object> model = new HashMap<>();
+				model.put("guardadoExitoso", true);
+				return new ModelAndView(model, "publico/pages/crear-met.vm"); // located in the resources directory
+				}, new VelocityTemplateEngine());
+		get("/consultar-met",
+				(request, response) -> {
+				return new ModelAndView(obtenerDatosParaTablaMetodologias(), "publico/pages/consultar-met.vm"); // located in the resources directory
+				}, new VelocityTemplateEngine());
 		get("/loginDB", Home3::formulario, new VelocityTemplateEngine());
 		post("/loginDB", Home3::formulario, new VelocityTemplateEngine());
 		get("/logout", new LogoutRoute(config, "/ingreso"));
@@ -163,6 +173,20 @@ public final class Home3 {
 		}, new VelocityTemplateEngine());
 		// Manejo de errores de pagina. Using string/html
 		notFound("<html><body><h1>Error 404 no existe la pagina</h1></body></html>");
+	}
+	
+	private static Map<String, Object> obtenerDatosParaTablaMetodologias() {
+		EntityManager em = ManejadorPersistencia.INSTANCE.getEntityManager();
+		List<Metodologia> metodologias= em.createQuery("SELECT i FROM Metodologia i", Metodologia.class).getResultList();
+		String datos="";
+		for (Metodologia m : metodologias){
+			datos = datos.concat("[\""+m.getNombre()+"\",\""+m.getExpresion()+"\"],");
+		}
+		Map<String, Object> map= new HashMap<>();
+		if (!datos.isEmpty())
+			datos="["+datos.substring(0, datos.length()-1)+"];";
+		map.put("datosTabla", datos);
+		return map;
 	}
 
 	private static Map<String, Object> obtenerDatosParaTablaIndicadores() {
@@ -212,34 +236,24 @@ public final class Home3 {
 	}
 	
 	public static Map<String, Object> asMap(String urlencoded, String encoding) throws UnsupportedEncodingException {
-
 	    Map<String, Object> map = new LinkedHashMap<>();
-
 	    for (String keyValue : urlencoded.trim().split("&")) {
-
 	      String[] tokens = keyValue.trim().split("=");
 	      String key = tokens[0];
 	      String value = tokens.length == 1 ? null : URLDecoder.decode(tokens[1], encoding);
-
 	      String[] keys = key.split("\\.");
 	      Map<String, Object> pointer = map;
-
 	      for (int i = 0; i < keys.length - 1; i++) {
-
 	        String currentKey = keys[i];
 	        Map<String, Object> nested = (Map<String, Object>) pointer.get(keys[i]);
-
 	        if (nested == null) {
 	          nested = new LinkedHashMap<>();
 	        }
-
 	        pointer.put(currentKey, nested);
 	        pointer = nested;
 	      }
-
 	      pointer.put(keys[keys.length - 1], value);
 	    }
-
 	    return map;
 	  }
 }

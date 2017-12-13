@@ -16,6 +16,16 @@
 
     <!-- MetisMenu CSS -->
     <link href="../vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+    
+    
+    <!-- DataTables CSS -->
+    <link href="../vendor/datatables-plugins/dataTables.bootstrap.css" rel="stylesheet">
+
+    <!-- DataTables Responsive CSS -->
+    <link href="../vendor/datatables-responsive/dataTables.responsive.css" rel="stylesheet">
+    
+    <!-- Social Buttons CSS -->
+    <link href="../vendor/bootstrap-social/bootstrap-social.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="../dist/css/sb-admin-2.css" rel="stylesheet">
@@ -56,10 +66,7 @@
                         <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        <li><a href="/logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                         </li>
                     </ul>
                     <!-- /.dropdown-user -->
@@ -71,19 +78,14 @@
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
-                        
-                        <li>
-                            <a href="menu.html"><i class="fa fa-dashboard fa-fw"></i> MENÚ </a>
-                        </li>
-                   
                         <li>
                             <a href="menu.html"><i class="fa fa-bar-chart-o fa-fw"></i> CUENTAS</a>
                                 <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="cargar-cuentas.html">Cargar Cuentas</a>
+                                    <a href="#">Cargar Cuentas</a>
                                 </li>
                                 <li>
-                                    <a href="consultar-cuentas.html">Consultar Cuentas</a>
+                                    <a href="#">Consultar Cuentas</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
@@ -93,7 +95,7 @@
                         <li>
                             <a href="menu.html"><i class="fa fa-table fa-fw"></i> INDICADORES </a>
                             <ul class="nav nav-second-level">
-                                <<li>
+                                <li>
                                     <a href="/crear-ind">Cargar Indicadores</a>
                                 </li>
                                 <li>
@@ -106,10 +108,10 @@
                             <a href="menu.html"><i class="fa fa-edit fa-fw"></i> METODOLOGÍAS</a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="crear-met.html">Crear Metodologías</a>
+                                    <a href="/crear-met">Crear Metodologías</a>
                                 </li>
                                 <li>
-                                    <a href="consultar-met.html">Consultar Metodologías</a>
+                                    <a href="/consultar-met">Consultar Metodologías</a>
                                 </li>
                             </ul>
                         </li>
