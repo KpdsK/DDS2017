@@ -33,7 +33,7 @@ public class Cuenta {
 	  }
 	  
 	  public String getNombre() {
-		    return nombre;
+		    return nombre.substring(3);
 		  }
 		  
 		  public Cuenta setNombre(String nombre) {
