@@ -33,9 +33,9 @@ public class Cuenta {
 		    this.valor = valor;
 		    return this;
 	  }
-	  
+	  	  
 	  public String getNombre() {
-		    return nombre;
+		    return nombre.substring(3);
 		  }
 		  
 		  public Cuenta setNombre(String nombre) {
@@ -60,4 +60,5 @@ public class Cuenta {
 			this.periodo = periodo;
 			return this;
 		}
+
 }

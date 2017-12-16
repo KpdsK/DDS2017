@@ -58,11 +58,6 @@ public class Indicador {
 		List<Cuenta> cuentas = em.createQuery("SELECT c FROM Cuenta c", Cuenta.class).getResultList();
 		List<Operable> listaOperables = indicadores.stream().map(indicador -> new ar.edu.utn.frba.dds.dondeinvierto.Indicador("IN_"+indicador.getNombre(), indicador.getExpresion())).collect(Collectors.toList());
 		listaOperables.addAll(cuentas.stream().map(cuenta -> new ar.edu.utn.frba.dds.dondeinvierto.Cuenta("CU_"+cuenta.getNombre(), cuenta.getValor())).collect(Collectors.toList()));
-		//		List<String> nombresIndicadores = em.createQuery("SELECT nombre FROM indicador", String.class).getResultList();
-		//		List<String> nombresCuentas = em.createQuery("SELECT nombre FROM cuenta", String.class).getResultList();
-		//		nombresCuentas.addAll(nombresIndicadores);
-		//		TODO: agregar cuentas y quitar este metodo a una nueva abstraccion con metodo estatico
-		//		List<Cuentas> cuentas = em.createQuery("SELECT * FROM cuenta", Cuentas.class).getResultList();
 		return listaOperables;
 	}
 

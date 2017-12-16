@@ -4,8 +4,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
 import javax.sql.DataSource;
 
 import org.h2.jdbcx.JdbcConnectionPool;
@@ -138,8 +141,8 @@ public final class Home3 {
 				return new ModelAndView(model, "publico/pages/crear-ind.vm"); // located in the resources directory
 				}, new VelocityTemplateEngine());
 		get("/consultar-ind",
-				(request, response) -> { Map<String, Object> model = new HashMap<>();
-				return new ModelAndView(new HashMap<String,Object>(), "publico/pages/consultar-ind.vm"); // located in the resources directory
+				(request, response) -> {
+				return new ModelAndView(obtenerDatosParaTablaIndicadores(), "publico/pages/consultar-ind.vm"); // located in the resources directory
 				}, new VelocityTemplateEngine());
 		get("/loginDB", Home3::formulario, new VelocityTemplateEngine());
 		post("/loginDB", Home3::formulario, new VelocityTemplateEngine());
@@ -175,6 +178,7 @@ public final class Home3 {
 		notFound("<html><body><h1>Error 404 no existe la pagina</h1></body></html>");
 	}
 
+<<<<<<< HEAD
 	private static boolean crearCuenta(String empresa, String cuenta, String valor, String periodo) {
 		Map<String, Object> map= new HashMap<>();
 		try {
@@ -185,6 +189,21 @@ public final class Home3 {
 		return true;
 	}
 	
+=======
+	private static Map<String, Object> obtenerDatosParaTablaIndicadores() {
+		EntityManager em = ManejadorPersistencia.INSTANCE.getEntityManager();
+		List<Indicador> indicadores = em.createQuery("SELECT i FROM Indicador i", Indicador.class).getResultList();
+		String datos="";
+		for (Indicador i : indicadores) {
+			datos = datos.concat("[\""+i.getNombre()+"\",\""+i.getExpresion()+"\"],");
+		}
+		Map<String, Object> map= new HashMap<>();
+		if (!datos.isEmpty())
+			datos="["+datos.substring(0, datos.length()-1)+"];";
+		map.put("datosTabla", datos);
+		return map;
+	}
+>>>>>>> branch 'master' of https://github.com/KpdsK/donde-invierto.git
 	private static boolean crearIndicador(String nombre, String expresion) {
 		Map<String, Object> map= new HashMap<>();
 		try {
