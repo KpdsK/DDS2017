@@ -1,12 +1,23 @@
 package spark.template.velocity;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.stream.Collectors;
+//import javax.activation.DataSource;
+import javax.servlet.*;
+import javax.servlet.http.*;
 
 import javax.persistence.EntityManager;
 import javax.sql.DataSource;
@@ -46,6 +57,7 @@ import ar.edu.utn.frba.dds.dondeinvierto.jpa.ManejadorPersistencia;
 
 import static spark.Spark.before;
 
+import spark.*;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
@@ -55,6 +67,9 @@ import static spark.Spark.get;
 import static spark.Spark.notFound;
 import static spark.Spark.post;
 import static spark.Spark.staticFiles;
+
+import static spark.Spark.*;
+import static spark.debug.DebugScreen.*;
 
 /**
  * VelocityTemplateRoute example.
@@ -108,6 +123,12 @@ public final class Home3 {
 		final Clients clients = new Clients("http://localhost:4567/callback", facebookClient, twitterClient);
 		final Config config = new Config(clients);
 		config.setHttpActionAdapter(new DemoHttpActionAdapter(new VelocityTemplateEngine()));
+		
+		enableDebugScreen();
+
+        File uploadDir = new File("upload");
+        uploadDir.mkdir(); // create the upload directory if it doesn't exist
+
 		
 		get("/ingreso", (request, response) -> {
 			Map<String, Object> model = new HashMap<>();
@@ -167,16 +188,60 @@ public final class Home3 {
 				(request, response) -> { Map<String, Object> model = new HashMap<>();
 				return new ModelAndView(new HashMap<String,Object>(), "publico/pages/consultar-cuentas.vm"); // located in the resources directory
 				}, new VelocityTemplateEngine());
-		post("/guardar-cuenta", (request, response) -> {
-			Map<String, Object> mapDatos =asMap(request.body(),"UTF-8");
-		    Map<String, Object> model = new HashMap<>();
-		    model.put("guardadoExitoso", crearCuenta((String)mapDatos.get("empresa"),(String)mapDatos.get("cuenta"),(String)mapDatos.get("valor"),(String)mapDatos.get("periodo")));
-		    return new ModelAndView(model, "publico/pages/cargar-cuentas.vm");
-		}, new VelocityTemplateEngine());
+		post("/guardar-cuenta", (req, res) -> {
+
+            Path tempFile = Files.createTempFile(uploadDir.toPath(), "", "");
+
+            req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/temp"));
+
+            try (InputStream input = req.raw().getPart("uploaded_file").getInputStream()) { // getPart needs to use same "name" as input field in form
+                Files.copy(input, tempFile, StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            logInfo(req, tempFile);
+
+			String mostrar = "vacio";
+            File file = new File(tempFile.getFileName().toString());
+            try {
+    			Scanner inputStream = new Scanner(file);
+
+				String linea1 = inputStream.next();//ignora la primer linea del archivo que tiene los titulos
+    			while (inputStream.hasNext()){
+    				String linea = inputStream.next();
+    				String[] datos = linea.split(",");
+    				
+    			    Map<String, Object> model = new HashMap<>();
+    			    model.put("guardadoExitoso", crearCuenta(datos[0],datos[1],datos[2],datos[3]));
+    			    return new ModelAndView(model, "publico/pages/cargar-cuentas.vm");
+
+    			}
+    			inputStream.close();
+    		} catch (FileNotFoundException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
+
+		return "<h1>Archivo cargado<h1>"+ mostrar;
+            
+        });
 		
 		// Manejo de errores de pagina. Using string/html
 		notFound("<html><body><h1>Error 404 no existe la pagina</h1></body></html>");
 	}
+	
+	// methods used for logging
+    private static void logInfo(Request req, Path tempFile) throws IOException, ServletException {
+        System.out.println("Uploaded file '" + getFileName(req.raw().getPart("uploaded_file")) + "' saved as '" + tempFile.toAbsolutePath() + "'");
+    }
+
+    private static String getFileName(Part part) {
+        for (String cd : part.getHeader("content-disposition").split(";")) {
+            if (cd.trim().startsWith("filename")) {
+                return cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
+            }
+        }
+        return null;
+    }
 
 <<<<<<< HEAD
 	private static boolean crearCuenta(String empresa, String cuenta, String valor, String periodo) {
