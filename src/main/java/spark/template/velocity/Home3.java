@@ -61,7 +61,7 @@ import static spark.Spark.staticFiles;
  */
 public final class Home3 {
 	private static java.util.List<CommonProfile> getProfiles(final Request request,
-			final Response response) {
+		final Response response) {
 		final SparkWebContext context = new SparkWebContext(request, response);
 		final ProfileManager manager = new ProfileManager(context);
 		return manager.getAll(true);
