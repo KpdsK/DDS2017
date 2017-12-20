@@ -1,6 +1,5 @@
 <html>
 <head>
-<title>jQuery add / remove textbox example</title>
 
 <script src="../vendor/jquery/jquery.min.js"></script>
 
@@ -120,25 +119,64 @@ div {
 			<!-- /.row -->
 			<div class="row">
 				<div class="col-lg-12">
+					<h2>Nombre
+					<input type='text' name='nombreRgla' id='nombreRegla'></h2>
 					<div class="panel panel-default">
-
 						<div class="panel-body">
+						#if(!${guardadoExitoso})
+                        	<div class="alert alert-danger alert-dismissable">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                Problema al guardar la Metodologia.
+                            </div>
+                         #end
 							<table id="reglas">
 								<thead>
 									<tr>
 										<th>Expresion</th>
-										<th></th>
+										<th>Tipo</th>
+										<th>Periodo</th>
 									</tr>
 								</thead>
 								<tbody>
-									<tr id='fila-regla0'data-content='Debe ingresar una regla' data-position='right center'>
+									<tr id='fila-regla0' data-fila-id='0' data-content='Debe ingresar una regla' data-position='right center'>
 										<td><input type='text' name='regla0' id='regla0'></td>
-										<td id='eliminar'><button type='button' class='btn btn-danger removeButton' data-fila-id='0'>X</button></td>"
+										<td>
+                                            <div class="form-group">
+                                            <label class="radio-inline">
+                                                <input type="radio" name="tipoRegla0" id="reglaBooleana0" value="reglaBooleana" checked>Booleana
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" name="tipoRegla0" id="reglaPorRatio" value="reglaRatio">Por Ratio
+                                            </label>
+                                        	</div>
+                                        </td>
+                                        <td>
+                                        	<select id="periodo0">
+                                        		<option>0</option>
+                                                <option>1</option>
+                                                <option>2</option>
+                                                <option>3</option>
+                                                <option>4</option>
+                                                <option>5</option>
+                                                <option>6</option>
+                                                <option>7</option>
+                                                <option>8</option>
+                                                <option>9</option>
+                                                <option>10</option>
+                                            </select></td>
+                                        <td id='eliminar'>
+											<button type='button' class='btn btn-danger removeButton' data-fila-id='0'>X</button>
+										</td>
 									</tr>
 								</tbody>
 								<tfoot>
 									<tr>
-										<th colspan="3"><input type='button' value='Agregar Regla' id='addButton' />
+										<th colspan="3">
+											<input type='button' value='Agregar Regla' id='addButton' />
+										</th>
+										<th colspan="3">
+											<!-- <button id='guardarMetodologia' onclick="guardarMetodologia();">Guardar Metodología</button> -->
+											<button id='guardarMetodologia'>Guardar Metodología</button>
 										</th>
 									</tr>
 								</tfoot>
@@ -157,45 +195,49 @@ div {
 
 	</div> 
 	<script type="text/javascript">
+	//TODO: verificar cuadros de texto completos y que este lleno el anterior para agregar uno nuevo
 		$(document).ready(function() {
 			var counter = 1;
-			/* function reglaRepetida() {
-			    var repetida = false;
-			    for (i = 1; i < counter; i++) {
-			        if ($("#regla" + i).val() == $("#regla" + counter).val()) {
-			            repetida = true;
-			        }
-			    }
-			    return repetida;
-			}
-		
-			function regla_anterior_correcta() {
-			    if (counter > 0) {
-			        var regla = $("#regla" + counter).val();
-			        return (!empty(regla))
-			    }
-			    return true;
-			} */
+			var contadorNombre = 1;
 				$("#addButton").click(function() {
 					/* if (regla_anterior_correcta()) { */
 						var tBodyPuntos = $("#reglas > tbody");
 						var trAIngresar = "<td><input type='text' name='regla"
-										  + counter
+										  + contadorNombre
 										  + "' id='regla"
-										  + counter
+										  + contadorNombre
 										  + "'></td>";
 										  
+                        trAIngresar += "<td><div class='form-group'><label class='radio-inline'>"
+                        			+ "<input type='radio' name='tipoRegla"
+                        			+ contadorNombre
+                        			+ "' id='reglaBooleana"
+                        			+ contadorNombre
+                        			+ "' value='reglaBooleana' checked>Booleana"
+                        			+ "</label><label class='radio-inline'>"
+                        			+ "<input type='radio' name='tipoRegla"
+                        			+ contadorNombre
+                        			+ "' id='reglaPorRatio' value='reglaRatio'>Por Ratio"
+                        			+ "</label></div></td>";
+                        trAIngresar += "<td><select id='periodo"
+                        			+ contadorNombre
+                        			+ "'><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option>"
+                        			+ "<option>5</option><option>6</option><option>7</option><option>8</option><option>9</option>"
+                        			+ "<option>10</option></select></td>";
+                     
 						trAIngresar += "<td id='eliminar'><button type='button' class='btn btn-danger removeButton' data-fila-id='"
-				      		           + counter
+				      		           + contadorNombre
 						      		   + "'>X</button></td>";
 						tBodyPuntos.append("<tr id='fila-regla"
-										   + counter
-										   + "'data-content='Debe ingresar una regla' data-position='right center'>"
+										   + contadorNombre
+										   + "'data-content='Debe ingresar una regla' data-position='right center' data-fila-id='"
+										   + contadorNombre
+										   + "'>"
 										   + trAIngresar + "</tr>");
 						counter++;
-					/* } */
+						contadorNombre++;
 				});
-
+				
 				$(document).on('click', '.removeButton', function() {
 					if (counter == 1) {
 						alert("Al menos una regla debe contener la metodologia");
@@ -212,9 +254,42 @@ div {
 			            }
 			        } */
 					counter--;
-				}); 
+				});
+				
+				$(document).on('click', '#guardarMetodologia', function() {
+					var datos = "";
+		            datos = document.getElementById("nombreRegla").value + ",";
+					var objTabla = $('#reglas tbody').map(function (i) {
+			            $(this).find('tr').each(function () {
+			            	var idFila = $(this).attr('data-fila-id');
+			                datos += document.getElementById("regla" + idFila).value
+	     	                      + ":"
+		                          + document.getElementById("reglaBooleana" + idFila).checked
+		                          + ":"
+		                          + document.getElementById("periodo" + idFila).value
+		                    	  + "#"; 
+			            });
+			            return datos.substr(0,datos.length-1); 
+			        }).get();
+			        alert("objTabla: " + objTabla);
+
+			        /* $.ajax({
+			                url : '/guardarMetodologia',
+			                data : objTabla, 
+			                method : 'get',
+			                datatype : 'text'
+			        }); */
+			        var form = $('<form action="/guardarMetodologia" method="post">' +
+			        		  '<input type="hidden" name="objTabla[]" value="' + objTabla + '"></input>' + '</form>');
+			        		  $('body').append(form);
+			        		  $(form).submit();
+			         /* $.post('/guardarMetodologia',
+			                {objTabla},
+			                "text"
+			        ) */
+				});
 			});
-	</script>
+		</script>
 	<!-- Bootstrap Core JavaScript -->
 	<script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
 

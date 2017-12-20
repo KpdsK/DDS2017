@@ -1,7 +1,13 @@
 package spark.template.velocity;
 
 import java.io.UnsupportedEncodingException;
+import ar.edu.utn.frba.dds.dondeinvierto.jpa.Regla;
+import ar.edu.utn.frba.dds.dondeinvierto.jpa.ReglaBooleana;
+import ar.edu.utn.frba.dds.dondeinvierto.jpa.ReglaPorRatio;
+
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -11,6 +17,7 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.sql.DataSource;
 
+import org.eclipse.jetty.util.UrlEncoded;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -41,6 +48,7 @@ import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import ar.edu.utn.frba.dds.dondeinvierto.jpa.Metodologia;
+import ar.edu.utn.frba.dds.dondeinvierto.ExpresionInvalidaException;
 import ar.edu.utn.frba.dds.dondeinvierto.jpa.Indicador;
 import ar.edu.utn.frba.dds.dondeinvierto.jpa.ManejadorPersistencia;
 
@@ -165,6 +173,14 @@ public final class Home3 {
 		get("/callback", callback);
 		post("/callback", callback);
 		
+		post("/guardarMetodologia", (request, response) -> {
+			String datos = request.queryParams("objTabla[]");
+			String[] datosMetodologia = datos.split(",");
+		    Map<String, Object> model = new HashMap<>();
+		    model.put("guardadoExitoso", crearMetodologia((String)datosMetodologia[0],datosMetodologia[1]));
+		    return new ModelAndView(model, "publico/pages/crear-met.vm");
+		}, new VelocityTemplateEngine());
+		
 		post("/guardar-indicador", (request, response) -> {
 			Map<String, Object> mapDatos =asMap(request.body(),"UTF-8");
 		    Map<String, Object> model = new HashMap<>();
@@ -175,12 +191,27 @@ public final class Home3 {
 		notFound("<html><body><h1>Error 404 no existe la pagina</h1></body></html>");
 	}
 	
+	private static List<Regla> obtenerListaDeReglas(String cadenaReglas) throws NumberFormatException, ExpresionInvalidaException{
+		List<Regla> listaReglas = new ArrayList<Regla>();
+		Arrays.asList(cadenaReglas.split("#")).stream().forEach(datos -> {
+			String[] datosRegla = datos.split(":");
+		try {
+			listaReglas.add(Boolean.valueOf(datosRegla[1]) ? new ReglaBooleana(datosRegla[0], Integer.parseInt(datosRegla[2])) : new ReglaPorRatio(datosRegla[0], Integer.parseInt(datosRegla[2])));
+		} catch (NumberFormatException | ExpresionInvalidaException e) {
+			e.printStackTrace();
+		}
+		});
+		if (listaReglas.isEmpty()) {
+			throw new ExpresionInvalidaException();
+		}
+		return listaReglas;
+	}
 	private static Map<String, Object> obtenerDatosParaTablaMetodologias() {
 		EntityManager em = ManejadorPersistencia.INSTANCE.getEntityManager();
 		List<Metodologia> metodologias= em.createQuery("SELECT i FROM Metodologia i", Metodologia.class).getResultList();
 		String datos="";
 		for (Metodologia m : metodologias){
-			datos = datos.concat("[\""+m.getNombre()+"\",\""+m.getExpresion()+"\"],");
+//			datos = datos.concat("[\""+m.getNombre()+"\",\""+m.getExpresion()+"\"],");
 		}
 		Map<String, Object> map= new HashMap<>();
 		if (!datos.isEmpty())
@@ -206,6 +237,15 @@ public final class Home3 {
 		Map<String, Object> map= new HashMap<>();
 		try {
 			ManejadorPersistencia.persistir(new Indicador().setNombre(nombre).setExpresion(expresion));
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+	private static boolean crearMetodologia(String nombre, String reglas) {
+		Map<String, Object> map= new HashMap<>();
+		try {
+			ManejadorPersistencia.persistir(new Metodologia().setNombre(nombre).setReglas(obtenerListaDeReglas(reglas)));
 		} catch (Exception e) {
 			return false;
 		}

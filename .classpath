@@ -70,5 +70,6 @@
 	<classpathentry kind="var" path="M2_REPO/org/pac4j/pac4j-http/2.1.0/pac4j-http-2.1.0.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/pac4j/pac4j-sql/2.1.0/pac4j-sql-2.1.0.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/jdbi/jdbi/2.78/jdbi-2.78.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
