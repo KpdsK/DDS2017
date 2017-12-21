@@ -14,6 +14,9 @@ import ar.edu.utn.frba.dds.dondeinvierto.ExpresionInvalidaException;
 @Entity
 @Table(name = "Regla")
 public abstract class Regla {
+	public Regla() {
+		super();
+	}
 	public Long getId() {
 		return id;
 	}

@@ -211,7 +211,7 @@ public final class Home3 {
 		List<Metodologia> metodologias= em.createQuery("SELECT i FROM Metodologia i", Metodologia.class).getResultList();
 		String datos="";
 		for (Metodologia m : metodologias){
-//			datos = datos.concat("[\""+m.getNombre()+"\",\""+m.getExpresion()+"\"],");
+			datos = datos.concat("[\""+m.getNombre()+"\",\""+obtenerReglas(m.getReglas())+"\"],");
 		}
 		Map<String, Object> map= new HashMap<>();
 		if (!datos.isEmpty())
@@ -220,12 +220,21 @@ public final class Home3 {
 		return map;
 	}
 
+	private static String obtenerReglas(List<Regla> reglas) {
+		String cadenaDatosReglas = "";
+		for( Regla regla: reglas) {
+			cadenaDatosReglas += regla.getExpresion() + "," + regla.getPeriodo() + ":";
+		}
+		if (!cadenaDatosReglas.isEmpty())
+			cadenaDatosReglas= cadenaDatosReglas.substring(0, cadenaDatosReglas.length()-1);
+		return cadenaDatosReglas;
+	}
 	private static Map<String, Object> obtenerDatosParaTablaIndicadores() {
 		EntityManager em = ManejadorPersistencia.INSTANCE.getEntityManager();
 		List<Indicador> indicadores = em.createQuery("SELECT i FROM Indicador i", Indicador.class).getResultList();
 		String datos="";
 		for (Indicador i : indicadores) {
-			datos = datos.concat("[\""+i.getNombre()+"\",\""+i.getExpresion()+"\"],");
+			datos = datos.concat("[\""+i.getNombre()+"\",\""+i.getExpresion()+"\"];");
 		}
 		Map<String, Object> map= new HashMap<>();
 		if (!datos.isEmpty())

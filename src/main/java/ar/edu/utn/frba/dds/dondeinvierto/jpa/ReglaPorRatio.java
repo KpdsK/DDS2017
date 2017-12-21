@@ -15,6 +15,10 @@ import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoParser;
 @Entity
 public class ReglaPorRatio extends ReglaAbstracta{
 
+	public ReglaPorRatio() {
+		super();
+	}
+	
 	public ReglaPorRatio(String expresion, int periodo) throws ExpresionInvalidaException {
 		super(expresion, periodo);
 	}

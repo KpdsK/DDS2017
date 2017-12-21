@@ -16,4 +16,7 @@ public abstract class ReglaAbstracta extends Regla {
 	public ReglaAbstracta(String expresion, int periodo) throws ExpresionInvalidaException {
 		super(expresion, periodo);
 	}
+	public ReglaAbstracta() {
+		super();
+	}
 }

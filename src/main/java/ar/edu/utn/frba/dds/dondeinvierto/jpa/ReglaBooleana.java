@@ -15,6 +15,10 @@ import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoParser;
 @Entity
 public class ReglaBooleana extends ReglaAbstracta{
 
+	public ReglaBooleana() {
+		super();
+	}
+	
 	public ReglaBooleana(String expresion, int periodo) throws ExpresionInvalidaException {
 		super(expresion, periodo);
 	}
