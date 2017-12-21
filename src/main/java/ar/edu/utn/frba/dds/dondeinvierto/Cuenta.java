@@ -36,4 +36,5 @@ public class Cuenta implements Operable {
 	public double operar(List<Operable> listaOperable) {
 		return getValor();
 	}
+
 }

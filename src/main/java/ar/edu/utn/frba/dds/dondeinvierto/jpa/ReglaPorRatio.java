@@ -9,6 +9,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 
 import ar.edu.utn.frba.dds.dondeinvierto.ExpresionInvalidaException;
 import ar.edu.utn.frba.dds.dondeinvierto.Operable;
+import ar.edu.utn.frba.dds.dondeinvierto.Regla;
 import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoLexer;
 import ar.edu.utn.frba.dds.dondeinvierto.antlr.DondeInviertoParser;
 
@@ -32,5 +33,10 @@ public class ReglaPorRatio extends ReglaAbstracta{
 		if(parser.getNumberOfSyntaxErrors()>0)
 			throw new ExpresionInvalidaException();
 		return expresion;
+	}
+
+	@Override
+	protected ar.edu.utn.frba.dds.dondeinvierto.ReglaPorRatio construirReglaEjecutable() {
+		return new ar.edu.utn.frba.dds.dondeinvierto.ReglaPorRatio(this.expresion, this.periodo, ManejadorPersistencia.listaIndicadoresEjecutables());
 	}
 }

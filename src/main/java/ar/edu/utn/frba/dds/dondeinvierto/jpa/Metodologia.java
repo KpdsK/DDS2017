@@ -57,4 +57,12 @@ public class Metodologia {
 		this.nombre = nombre;
 		return this;
 	}
+
+	public ar.edu.utn.frba.dds.dondeinvierto.Metodologia construirMetodologiaEjecutable() {
+		return new ar.edu.utn.frba.dds.dondeinvierto.Metodologia(ManejadorPersistencia.listaEmpresasEjecutables(), this.nombre, obtenerReglasEjecutables());
+	}
+
+	private List<ar.edu.utn.frba.dds.dondeinvierto.Regla> obtenerReglasEjecutables() {
+		return reglas.stream().map(regla -> regla.construirReglaEjecutable()).collect(Collectors.toList());
+	}
 }

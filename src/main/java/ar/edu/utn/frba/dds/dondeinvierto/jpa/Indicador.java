@@ -37,8 +37,11 @@ public class Indicador {
 	public String getExpresion() {
 		return expresion;
 	}
-
-	public Indicador setExpresion(String expresion) throws ExpresionInvalidaException {
+	public Indicador setExpresion(String expresion) {
+		this.expresion = expresion;
+		return this;
+	}
+	public Indicador asignarExpresion(String expresion) throws ExpresionInvalidaException {
 		this.expresion = verificarExpresion(expresion);
 		return this;
 	}
@@ -59,5 +62,9 @@ public class Indicador {
 	public Indicador setNombre(String nombre) {
 		this.nombre = "IN_"+nombre;
 		return this;
+	}
+
+	public ar.edu.utn.frba.dds.dondeinvierto.Indicador obtenerIndicadorEjecutable() {
+		return new ar.edu.utn.frba.dds.dondeinvierto.Indicador(this.nombre, this.expresion);
 	}
 }

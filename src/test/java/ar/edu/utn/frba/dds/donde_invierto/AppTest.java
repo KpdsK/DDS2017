@@ -31,6 +31,7 @@ import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import spark.template.velocity.Home3;
 
 /**
  * Unit test for simple App.
@@ -211,7 +212,7 @@ extends TestCase
 //	{
 //		ar.edu.utn.frba.dds.dondeinvierto.jpa.Indicador indicador = new ar.edu.utn.frba.dds.dondeinvierto.jpa.Indicador();
 //	
-//		indicador.setExpresion("3 + 5").setNombre("PruebaTest");
+//		indicador.setExpresion("3 + IN_1 - CU_2").setNombre("3");
 //		ManejadorPersistencia.persistir(indicador);
 //	}
 	
@@ -231,16 +232,35 @@ extends TestCase
 //		empresa.setNombre("Empresa");
 //		ManejadorPersistencia.persistir(empresa);
 //	}
-	public void testPersistenciaMetodologia() throws ExpresionInvalidaException
+	public void testPersistenciaEmpresa()
 	{
-		ar.edu.utn.frba.dds.dondeinvierto.jpa.Metodologia metodologia = new ar.edu.utn.frba.dds.dondeinvierto.jpa.Metodologia();
-	
-		List<ar.edu.utn.frba.dds.dondeinvierto.jpa.Regla> listaReglas = new ArrayList<>();
-		listaReglas.add(new ar.edu.utn.frba.dds.dondeinvierto.jpa.ReglaBooleana("jklasdh",9));
-		listaReglas.add(new ar.edu.utn.frba.dds.dondeinvierto.jpa.ReglaPorRatio("Ratio",2));
-		metodologia.setNombre("MetodologiaPrueba").setReglas(listaReglas);
-		ManejadorPersistencia.persistir(metodologia);
+		System.out.println(Home3.aplicarMetodologia("MetodologiaPrueba"));
 	}
+	
+//	public void testPersistenciaMetodologia() throws ExpresionInvalidaException
+//	{
+//		ar.edu.utn.frba.dds.dondeinvierto.jpa.Metodologia metodologia = new ar.edu.utn.frba.dds.dondeinvierto.jpa.Metodologia();
+//	
+//		List<ar.edu.utn.frba.dds.dondeinvierto.jpa.Regla> listaReglas = new ArrayList<>();
+//		listaReglas.add(new ar.edu.utn.frba.dds.dondeinvierto.jpa.ReglaBooleana("IN_1 > IN_3",0));
+//		listaReglas.add(new ar.edu.utn.frba.dds.dondeinvierto.jpa.ReglaPorRatio("IN_2 + CU_3",0));
+//		metodologia.setNombre("MetodologiaPrueba").setReglas(listaReglas);
+//		ManejadorPersistencia.persistir(metodologia);
+//	}
+//	public void testPersistenciaEmpresaConCuentas() throws ExpresionInvalidaException
+//	{
+//		ar.edu.utn.frba.dds.dondeinvierto.jpa.Empresa empresa = new ar.edu.utn.frba.dds.dondeinvierto.jpa.Empresa();
+//	
+//		List<ar.edu.utn.frba.dds.dondeinvierto.jpa.Cuenta> listaCuentas = new ArrayList<>();
+//		listaCuentas.add(new ar.edu.utn.frba.dds.dondeinvierto.jpa.Cuenta("CU_1",3.0,2017));
+//		listaCuentas.add(new ar.edu.utn.frba.dds.dondeinvierto.jpa.Cuenta("CU_2",2.0,2017));
+//		listaCuentas.add(new ar.edu.utn.frba.dds.dondeinvierto.jpa.Cuenta("CU_2",2.1,2016));
+//		listaCuentas.add(new ar.edu.utn.frba.dds.dondeinvierto.jpa.Cuenta("CU_3",2.2,2017));
+//		listaCuentas.add(new ar.edu.utn.frba.dds.dondeinvierto.jpa.Cuenta("CU_3",2.3,2016));
+//		empresa.setNombre("Empresa2").setCuentas(listaCuentas);
+//		ManejadorPersistencia.persistir(empresa);
+//	}
+	
 //	public void testMetodologiaConReglaBooleanaCumplida() throws IOException
 //	{
 //		//TODO: Completar casuistica

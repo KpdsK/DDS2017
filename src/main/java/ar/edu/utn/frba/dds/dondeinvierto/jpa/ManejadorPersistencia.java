@@ -1,8 +1,14 @@
 package ar.edu.utn.frba.dds.dondeinvierto.jpa;
 
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+
+import ar.edu.utn.frba.dds.dondeinvierto.Operable;
 
 public enum ManejadorPersistencia {
 	INSTANCE;
@@ -27,5 +33,21 @@ public enum ManejadorPersistencia {
 		em.getTransaction()
 		.commit();
 		em.close();
+	}
+
+	public static List<Operable> listaIndicadoresEjecutables() {
+		return listaIndicadores().stream().map(ind -> ind.obtenerIndicadorEjecutable()).collect(Collectors.toList());
+	}
+	
+	public static List<Indicador> listaIndicadores() {
+		return INSTANCE.getEntityManager().createQuery("SELECT i FROM Indicador i" , Indicador.class).getResultList();
+	}
+
+	public static List<Empresa> listaEmpresas() {
+		return INSTANCE.getEntityManager().createQuery("SELECT e FROM Empresa e" , Empresa.class).getResultList();
+	}
+	
+	public static List<ar.edu.utn.frba.dds.dondeinvierto.Empresa> listaEmpresasEjecutables() {
+		return listaEmpresas().stream().map(emp -> emp.obtenerEmpresaEjecutable()).collect(Collectors.toList());
 	}
 }

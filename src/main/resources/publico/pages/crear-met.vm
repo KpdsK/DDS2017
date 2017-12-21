@@ -283,12 +283,12 @@ div {
 			            });
 			            return datos.substr(0,datos.length-1); 
 			        }).get();
-			        alert("objTabla: " + objTabla);
 
 			        var form = $('<form action="/guardarMetodologia" method="post">' +
-			        		  '<input type="hidden" name="objTabla[]" value="' + objTabla + '"></input>' + '</form>');
-			        		  $('body').append(form);
-			        		  $(form).submit();
+			        		  '<input type="hidden" name="objTabla[]" value="' 
+			        		  + objTabla + '"></input>' + '</form>');
+			        $('body').append(form);
+			        $(form).submit();
 				});
 			});
 		</script>

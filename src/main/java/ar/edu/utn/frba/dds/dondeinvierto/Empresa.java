@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.dondeinvierto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Empresa {
 
@@ -31,4 +32,5 @@ public class Empresa {
 		return antiguedad;
 	}
 	//TODO: Hacer metodo obtener cuentas segun periodo, año, nombre, criterios distintos. Con lambdas
+
 }

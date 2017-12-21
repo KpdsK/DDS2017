@@ -173,6 +173,14 @@ public final class Home3 {
 		get("/callback", callback);
 		post("/callback", callback);
 		
+		post("/aplicarMetodologia", (request, response) -> {
+			String datos = request.queryParams("datos").trim();
+		    Map<String, Object> model = new HashMap<>();
+		    model.put("datosTabla", aplicarMetodologia(datos));
+		    model.put("nombreMetodologia", datos);
+		    return new ModelAndView(model, "publico/pages/resultado-met.vm");
+		}, new VelocityTemplateEngine());
+		
 		post("/guardarMetodologia", (request, response) -> {
 			String datos = request.queryParams("objTabla[]");
 			String[] datosMetodologia = datos.split(",");
@@ -191,6 +199,11 @@ public final class Home3 {
 		notFound("<html><body><h1>Error 404 no existe la pagina</h1></body></html>");
 	}
 	
+	public static String aplicarMetodologia(String datos) {
+		EntityManager em = ManejadorPersistencia.INSTANCE.getEntityManager();
+		Metodologia metodologia = em.createQuery("SELECT i FROM Metodologia i where nombre=\'" + datos.trim() + "\'" , Metodologia.class).getResultList().get(0);
+		return metodologia.construirMetodologiaEjecutable().obtenerResultadosParaWeb(); 
+	}
 	private static List<Regla> obtenerListaDeReglas(String cadenaReglas) throws NumberFormatException, ExpresionInvalidaException{
 		List<Regla> listaReglas = new ArrayList<Regla>();
 		Arrays.asList(cadenaReglas.split("#")).stream().forEach(datos -> {
@@ -234,18 +247,18 @@ public final class Home3 {
 		List<Indicador> indicadores = em.createQuery("SELECT i FROM Indicador i", Indicador.class).getResultList();
 		String datos="";
 		for (Indicador i : indicadores) {
-			datos = datos.concat("[\""+i.getNombre()+"\",\""+i.getExpresion()+"\"];");
+			datos = datos.concat("[\""+i.getNombre()+"\",\""+i.getExpresion()+"\"],");
 		}
 		Map<String, Object> map= new HashMap<>();
 		if (!datos.isEmpty())
-			datos="["+datos.substring(0, datos.length()-1)+"];";
+			datos="["+datos.substring(0, datos.length()-1)+"]";
 		map.put("datosTabla", datos);
 		return map;
 	}
 	private static boolean crearIndicador(String nombre, String expresion) {
 		Map<String, Object> map= new HashMap<>();
 		try {
-			ManejadorPersistencia.persistir(new Indicador().setNombre(nombre).setExpresion(expresion));
+			ManejadorPersistencia.persistir(new Indicador().setNombre(nombre).asignarExpresion(expresion));
 		} catch (Exception e) {
 			return false;
 		}

@@ -41,4 +41,13 @@ public class Metodologia {
 	private List<ResultadoRegla> encapsularEmpresas() {
 		return empresas.stream().map(empresa -> new ResultadoRegla(empresa)).collect(Collectors.toList()) ;
 	}
+
+	public String obtenerResultadosParaWeb() {
+		String cadenaResultado = "";
+		for (ResultadoRegla resultado: this.ejecutar()){
+			cadenaResultado += "[\"" + resultado.getEmpresa().getNombre() + "\",\"" 
+							+ Double.toString(resultado.getRatio()) + "\"],";  
+		}
+		return cadenaResultado.isEmpty() ? cadenaResultado : "[" + cadenaResultado.substring(0, cadenaResultado.length() -1) + "]"; 
+	}
 }

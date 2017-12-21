@@ -56,4 +56,5 @@ public abstract class Regla {
 	protected int periodo;
 	
 	protected abstract String verificarExpresion(String expresion) throws ExpresionInvalidaException;
+	protected abstract ar.edu.utn.frba.dds.dondeinvierto.Regla construirReglaEjecutable();
 }

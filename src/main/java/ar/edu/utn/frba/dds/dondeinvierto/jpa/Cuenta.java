@@ -3,18 +3,52 @@ package ar.edu.utn.frba.dds.dondeinvierto.jpa;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "cuenta")
 public class Cuenta {
-	  @Id
+	  public Cuenta(String nombre, double valor, int anio) {
+		super();
+		this.valor = valor;
+		this.nombre = nombre;
+		this.anio = anio;
+	}
+
+	public Cuenta() {
+		super();
+	}
+
+	@Id
 	  @GeneratedValue
 	  private Integer id;
 	  private double valor;
 	  private String nombre;
+	  private int anio;
+	  public int getAnio() {
+		return anio;
+	}
 
-	  public Integer getId() {
+	public Cuenta setAnio(int anio) {
+		this.anio = anio;
+		return this;
+	}
+
+	@ManyToOne
+	  @JoinColumn(name="idEmpresa")
+	  protected Empresa empresa;
+
+	  public Empresa getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
+	}
+
+	public Integer getId() {
 	    return id;
 	  }
 
@@ -40,4 +74,8 @@ public class Cuenta {
 			    this.nombre = nombre;
 			    return this;
 		  }
+
+		public ar.edu.utn.frba.dds.dondeinvierto.Cuenta construirCuentaEjecutable() {
+			return new ar.edu.utn.frba.dds.dondeinvierto.Cuenta(this.nombre, this.getValor(), this.getAnio());
+		}
 }

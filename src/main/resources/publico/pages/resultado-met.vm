@@ -113,7 +113,7 @@
 							
 			<div class="row">
 				<div class="col-lg-12">
-					<h1 class="page-header">Metodologìas</h1>
+					<h1 class="page-header">Resultados aplicación de Metodologìa: ${nombreMetodologia}</h1>
 				</div>
 				<!-- /.col-lg-12 -->
 			</div>
@@ -165,27 +165,14 @@
 
 	<!-- Page-Level Demo Scripts - Tables - Use for reference -->
 	<script>
-    var dataSet = ${datosTabla}
+    var dataSet = ${datosTabla};
 	$(document).ready(function() {
 	    $('#dataTables-example').DataTable( {
 	        data: dataSet,
 	        columns: [
-	            { title: "Nombre" },
-	            { title: "Expresion" },
+	            { title: "Empresa" },
+	            { title: "Ratio" },
 	        ]
-	    } );
-	    $('#dataTables-example tbody').on( 'click', 'tr', function () {
-	    	var txt;
-	        var aplicaMetodologia = confirm("Desea aplicar metodologia");
-	        if (aplicaMetodologia == true) {
-	        	var columnas = $(this).find('td');
-                var datos = columnas[0].textContent;
-	        	var form = $('<form action="/aplicarMetodologia" method="post">' +
-		        		  '<input type="hidden" name="datos" value="' 
-		        		  + datos + '"></input>' + '</form>');
-		        $('body').append(form);
-		        $(form).submit();
-	        } 
 	    } );
 	} );
     </script>
