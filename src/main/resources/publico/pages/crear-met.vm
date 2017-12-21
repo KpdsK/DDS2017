@@ -119,10 +119,14 @@ div {
 			<!-- /.row -->
 			<div class="row">
 				<div class="col-lg-12">
-					<h2>Nombre
-					<input type='text' name='nombreRgla' id='nombreRegla'></h2>
+					<h2>
+					<!-- <input type='text' name='nombreRegla' id='inputError' class="form-control"></h2> -->
+					<div class="form-group " id="divNombre">
+                                            <label class="control-label" for="nombreRegla">Nombre</label>
+                                            <input type="text" name='nombreRegla' class="form-control" id="nombreRegla">
+                    </div></h2>
 					<div class="panel panel-default">
-						<div class="panel-body">
+						<div class="panel-body" id="refrescar">
 						#if(!${guardadoExitoso})
                         	<div class="alert alert-danger alert-dismissable">
                                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -139,7 +143,9 @@ div {
 								</thead>
 								<tbody>
 									<tr id='fila-regla0' data-fila-id='0' data-content='Debe ingresar una regla' data-position='right center'>
-										<td><input type='text' name='regla0' id='regla0'></td>
+										<td>
+                                           	<input type='text' name='regla0' id='regla0'>
+                    					</td>
 										<td>
                                             <div class="form-group">
                                             <label class="radio-inline">
@@ -198,9 +204,10 @@ div {
 	//TODO: verificar cuadros de texto completos y que este lleno el anterior para agregar uno nuevo
 		$(document).ready(function() {
 			var counter = 1;
-			var contadorNombre = 1;
+			var contadorNombre = 0;
 				$("#addButton").click(function() {
-					/* if (regla_anterior_correcta()) { */
+					 if (document.getElementById("regla" + contadorNombre).value.trim()!="") {
+						contadorNombre++;
 						var tBodyPuntos = $("#reglas > tbody");
 						var trAIngresar = "<td><input type='text' name='regla"
 										  + contadorNombre
@@ -235,7 +242,10 @@ div {
 										   + "'>"
 										   + trAIngresar + "</tr>");
 						counter++;
-						contadorNombre++;
+					 } else {
+						 alert("No puede haber reglas vacias");
+						 document.getElementById("regla" + contadorNombre).focus();
+					 }
 				});
 				
 				$(document).on('click', '.removeButton', function() {
@@ -246,17 +256,19 @@ div {
 					var idFila = $(this).attr('data-fila-id');
 			        var tFilaABorrar = $("#reglas > tbody tr[id='fila-regla" + idFila + "']");
 			        $(tFilaABorrar).remove();
-			        /* if ($("#puntos-ingresados > tbody tr").length === 0) {
-			            cantidadFilasPuntos = 0;
-			        } else {
-			            if ($("#puntos-ingresados > tbody tr").length === 1) {
-			                $("#boton-calcular-coeficientes").addClass("disabled");
-			            }
-			        } */
 					counter--;
 				});
 				
+				function informarError(elemento, idElementoFoco) {
+					var datos = elemento.getAttribute("class") + " has-error";
+					elemento.setAttribute("class", datos); 
+					document.getElementById(idElementoFoco).focus();
+				}
 				$(document).on('click', '#guardarMetodologia', function() {
+					if (document.getElementById("nombreRegla").value.trim()== "") {
+						informarError(document.getElementById("divNombre"),"nombreRegla");
+						return true;
+					}
 					var datos = "";
 		            datos = document.getElementById("nombreRegla").value + ",";
 					var objTabla = $('#reglas tbody').map(function (i) {
@@ -273,20 +285,10 @@ div {
 			        }).get();
 			        alert("objTabla: " + objTabla);
 
-			        /* $.ajax({
-			                url : '/guardarMetodologia',
-			                data : objTabla, 
-			                method : 'get',
-			                datatype : 'text'
-			        }); */
 			        var form = $('<form action="/guardarMetodologia" method="post">' +
 			        		  '<input type="hidden" name="objTabla[]" value="' + objTabla + '"></input>' + '</form>');
 			        		  $('body').append(form);
 			        		  $(form).submit();
-			         /* $.post('/guardarMetodologia',
-			                {objTabla},
-			                "text"
-			        ) */
 				});
 			});
 		</script>
