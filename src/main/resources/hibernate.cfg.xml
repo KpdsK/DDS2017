@@ -3,21 +3,21 @@
         "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 
 <hibernate-configuration>
-    <session-factory>
-        <property name="connection.url">jdbc:mysql://localhost:3306/donde_invierto</property>
-        <property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>
-        <property name="hibernate.connection.username">pds</property>
-        <property name="hibernate.connection.password">clave</property>
-        
-        <property name="show_sql">true</property>
-        
-        
-        <property name="transaction.factory_class">
-            org.hibernate.transaction.JDBCTransactionFactory
-        </property>
-        <property name="hbm2ddl.auto">update</property>
+	<session-factory>
+		<property name="connection.url">jdbc:mysql://localhost:3306/donde_invierto</property>
+		<property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>
+		<property name="hibernate.connection.username">pds</property>
+		<property name="hibernate.connection.password">clave</property>
 
-        <mapping class="ar.edu.utn.frba.dds.dondeinvierto.jpa.Usuario" />
-    </session-factory>
+		<property name="show_sql">true</property>
+
+
+		<property name="transaction.factory_class">
+			org.hibernate.transaction.JDBCTransactionFactory
+		</property>
+		<property name="hbm2ddl.auto">update</property>
+
+		<mapping class="ar.edu.utn.frba.dds.dondeinvierto.jpa.Usuario" />
+	</session-factory>
 
 </hibernate-configuration>
