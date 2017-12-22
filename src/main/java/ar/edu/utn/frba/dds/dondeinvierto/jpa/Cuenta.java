@@ -24,7 +24,6 @@ public class Cuenta {
 	@Id
 	  @GeneratedValue
 	  private Integer id;
-	  private double valor;
 	  private String nombre;
 	  private int anio;
 	  public int getAnio() {
@@ -57,15 +56,15 @@ public class Cuenta {
 	    return this;
 	  }
 
-	  public double getValor() {
+	  public String getValor() {
 	    return valor;
 	  }
 	  
-	  public Cuenta setValor(double valor) {
+	  public Cuenta setValor(String valor) {
 		    this.valor = valor;
 		    return this;
 	  }
-	  
+	  	  
 	  public String getNombre() {
 		    return nombre.substring(3);
 		  }
