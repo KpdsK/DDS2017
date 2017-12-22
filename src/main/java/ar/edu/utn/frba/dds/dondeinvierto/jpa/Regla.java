@@ -33,7 +33,8 @@ public abstract class Regla {
 		return expresion;
 	}
 	public void setExpresion(String expresion) throws ExpresionInvalidaException {
-		this.expresion = verificarExpresion(expresion);
+//		this.expresion = verificarExpresion(expresion);
+		this.expresion = expresion;
 	}
 	public int getPeriodo() {
 		return periodo;
@@ -41,7 +42,7 @@ public abstract class Regla {
 	public void setPeriodo(int periodo) {
 		this.periodo = periodo;
 	}
-	public Regla(String expresion, int periodo) throws ExpresionInvalidaException {
+	public Regla(String expresion, int periodo, String idUsuario) throws ExpresionInvalidaException {
 		super();
 		this.expresion = verificarExpresion(expresion);
 		this.periodo = periodo;
@@ -53,6 +54,13 @@ public abstract class Regla {
 	@JoinColumn(name="idMetodologia")
 	protected Metodologia metodologia;
 	protected String expresion;
+	protected String idUsuario;
+	public String getIdUsuario() {
+		return idUsuario;
+	}
+	public void setIdUsuario(String idUsuario) {
+		this.idUsuario = idUsuario;
+	}
 	protected int periodo;
 	
 	protected abstract String verificarExpresion(String expresion) throws ExpresionInvalidaException;

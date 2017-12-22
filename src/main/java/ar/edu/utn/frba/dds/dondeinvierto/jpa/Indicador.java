@@ -24,6 +24,11 @@ public class Indicador {
 	private Integer id;
 	private String nombre;
 	private String expresion;
+	private String idUsuario;
+
+	public String getIdUsuario() {
+		return idUsuario;
+	}
 
 	public Integer getId() {
 		return id;
@@ -48,7 +53,7 @@ public class Indicador {
 	private String verificarExpresion(String expresion) throws ExpresionInvalidaException {
 		DondeInviertoLexer lexer = new DondeInviertoLexer( new ANTLRInputStream(expresion));
 		CommonTokenStream tokens = new CommonTokenStream( lexer );
-		DondeInviertoParser parser = new DondeInviertoParser( tokens, MetodosUtiles.obtenerCuentasEindicadoresDeUsuario());
+		DondeInviertoParser parser = new DondeInviertoParser( tokens, MetodosUtiles.obtenerCuentasEindicadoresDeUsuario(this.idUsuario));
 		DondeInviertoParser.IdentificadorContext tree = parser.identificador();
 		if(parser.getNumberOfSyntaxErrors()>0)
 			throw new ExpresionInvalidaException();
@@ -66,5 +71,10 @@ public class Indicador {
 
 	public ar.edu.utn.frba.dds.dondeinvierto.Indicador obtenerIndicadorEjecutable() {
 		return new ar.edu.utn.frba.dds.dondeinvierto.Indicador(this.nombre, this.expresion);
+	}
+
+	public Indicador setIdUsuario(String idUsuario) {
+		this.idUsuario=idUsuario;
+		return this;
 	}
 }

@@ -13,8 +13,8 @@ import ar.edu.utn.frba.dds.dondeinvierto.ExpresionInvalidaException;
 
 @MappedSuperclass
 public abstract class ReglaAbstracta extends Regla {
-	public ReglaAbstracta(String expresion, int periodo) throws ExpresionInvalidaException {
-		super(expresion, periodo);
+	public ReglaAbstracta(String expresion, int periodo, String idUsuario) throws ExpresionInvalidaException {
+		super(expresion, periodo, idUsuario);
 	}
 	public ReglaAbstracta() {
 		super();

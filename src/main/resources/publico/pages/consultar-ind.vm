@@ -62,6 +62,7 @@
             <ul class="nav navbar-top-links navbar-right">
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    ${usuario}
                         <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
@@ -181,18 +182,20 @@
 	            { title: "Expresion" },
 	        ]
 	    } );
-		var table =  $('#dataTables-example').DataTable();
-		$('#dataTables-example').on( 'click', 'tr', function () {
-			/* if ( $(this).hasClass('selected') ) {
-	            $(this).removeClass('selected');
-	        }
-	        else {
-	            table.$('tr.selected').removeClass('selected');
-	            $(this).addClass('selected');
-	        } */
- 			id = table.row(this).data();
-		    alert( 'Clicked row id '+id );
- 		} );
+		$('#dataTables-example tbody').on( 'click', 'tr', function () {
+	        var aplicaIndicador = confirm("Desea aplicar Indicador");
+	        if (aplicaIndicador == true) {
+	        	var columnas = $(this).find('td');
+                var datos = columnas[0].textContent;
+	        	var form = $('<form action="/aplicarIndicador" method="post">' +
+		        		  '<input type="hidden" name="datos" value="' 
+		        		  + datos + '"></input>'
+		        		  + '<input type="hidden" name="idUsuario" value="'
+		        		  +  ${id} + '"></input></form>');
+		        $('body').append(form);
+		        $(form).submit();
+	        } 
+	    } );
 	} );
     </script>
 </body>

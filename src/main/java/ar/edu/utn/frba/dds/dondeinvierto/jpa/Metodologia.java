@@ -29,6 +29,16 @@ public class Metodologia {
 	private String nombre;
 	@OneToMany(mappedBy="metodologia", cascade = CascadeType.ALL)
 	private List<Regla> reglas;
+	private String idUsuario;
+
+	public String getIdUsuario() {
+		return idUsuario;
+	}
+
+	public Metodologia setIdUsuario(String idUsuario) {
+		this.idUsuario = idUsuario;
+		return this;
+	}
 
 	public Integer getId() {
 		return id;

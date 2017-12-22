@@ -20,15 +20,15 @@ public class ReglaBooleana extends ReglaAbstracta{
 		super();
 	}
 	
-	public ReglaBooleana(String expresion, int periodo) throws ExpresionInvalidaException {
-		super(expresion, periodo);
+	public ReglaBooleana(String expresion, int periodo, String idUsuario) throws ExpresionInvalidaException {
+		super(expresion, periodo, idUsuario);
 	}
 
 	@Override
 	protected String verificarExpresion(String expresion) throws ExpresionInvalidaException {
 		DondeInviertoLexer lexer = new DondeInviertoLexer( new ANTLRInputStream(expresion));
 		CommonTokenStream tokens = new CommonTokenStream( lexer );
-		DondeInviertoParser parser = new DondeInviertoParser( tokens, MetodosUtiles.obtenerCuentasEindicadoresDeUsuario());
+		DondeInviertoParser parser = new DondeInviertoParser( tokens, MetodosUtiles.obtenerCuentasEindicadoresDeUsuario(idUsuario));
 		DondeInviertoParser.CondicionContext tree = parser.condicion();
 		if(parser.getNumberOfSyntaxErrors()>0)
 			throw new ExpresionInvalidaException();

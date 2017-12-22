@@ -68,7 +68,7 @@
 			<ul class="nav navbar-top-links navbar-right">
 
 				<li class="dropdown"><a class="dropdown-toggle"
-					data-toggle="dropdown" href="#"> <i class="fa fa-user fa-fw"></i>
+					data-toggle="dropdown" href="#">${usuario} <i class="fa fa-user fa-fw"></i>
 						<i class="fa fa-caret-down"></i>
 				</a>
 					<ul class="dropdown-menu dropdown-user">
@@ -113,7 +113,7 @@
 							
 			<div class="row">
 				<div class="col-lg-12">
-					<h1 class="page-header">Resultados aplicación de Metodologìa: ${nombreMetodologia}</h1>
+					<h1 class="page-header">${titulo}</h1>
 				</div>
 				<!-- /.col-lg-12 -->
 			</div>

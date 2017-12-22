@@ -68,7 +68,7 @@
 			<ul class="nav navbar-top-links navbar-right">
 
 				<li class="dropdown"><a class="dropdown-toggle"
-					data-toggle="dropdown" href="#"> <i class="fa fa-user fa-fw"></i>
+					data-toggle="dropdown" href="#">${usuario} <i class="fa fa-user fa-fw"></i>
 						<i class="fa fa-caret-down"></i>
 				</a>
 					<ul class="dropdown-menu dropdown-user">
@@ -175,14 +175,15 @@
 	        ]
 	    } );
 	    $('#dataTables-example tbody').on( 'click', 'tr', function () {
-	    	var txt;
 	        var aplicaMetodologia = confirm("Desea aplicar metodologia");
 	        if (aplicaMetodologia == true) {
 	        	var columnas = $(this).find('td');
                 var datos = columnas[0].textContent;
 	        	var form = $('<form action="/aplicarMetodologia" method="post">' +
 		        		  '<input type="hidden" name="datos" value="' 
-		        		  + datos + '"></input>' + '</form>');
+		        		  + datos + '"></input>'
+		        		  + '<input type="hidden" name="idUsuario" value="'
+		        		  +  ${id} + '"></input></form>');
 		        $('body').append(form);
 		        $(form).submit();
 	        } 

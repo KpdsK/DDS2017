@@ -76,25 +76,20 @@ public final class Home3 {
 	}   
 	private static Map buildModel(Request request, Response response) {
 
-		final Map model = new HashMap<String,Object>();
-
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> model = new HashMap<String, Object>();
 		for (String k: request.session().attributes()) {
 			Object v = request.session().attribute(k);
-			map.put(k,v);
+			model.put(k,v);
 		}
-
-		model.put("session", map.entrySet());
-
+		spark.Session sesion = request.session(true);
 		java.util.List<CommonProfile> userProfiles = getProfiles(request,response);
-
 		model.put("profiles", userProfiles);
-
 		try {
 			if (userProfiles.size()>0) {
 				CommonProfile firstProfile = userProfiles.get(0);
+				sesion.attribute("id", firstProfile.getId());
 				model.put("firstProfile", firstProfile);	
-				model.put("name",firstProfile.getDisplayName());
+				model.put("usuario",firstProfile.getDisplayName());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -119,14 +114,22 @@ public final class Home3 {
 		
 		get("/ingreso", (request, response) -> {
 			Map<String, Object> model = new HashMap<>();
-			model.put("ingresoValido", true);
-			return new ModelAndView(model, "publico/pages/login.vm"); // located in the resources directory
+//			if (request.session().attribute("usuario"). .isEmpty()) {
+				model.put("ingresoValido", true);
+				return new ModelAndView(model, "publico/pages/login.vm");
+//			}
+//			model.put("name", request.session().attribute("usuario"));
+//			return new ModelAndView(model, "publico/pages/inicio.vm");
 		}, new VelocityTemplateEngine());
 
 		post("/ingreso", (request, response) -> {
 			Map<String, Object> model = new HashMap<>();
-			model.put("ingresoValido", true);
-			return new ModelAndView(model, "publico/pages/login.vm"); // located in the resources directory
+//			if (request.session().id().isEmpty()) {
+				model.put("ingresoValido", true);
+				return new ModelAndView(model, "publico/pages/login.vm");
+//			}
+//			model.put("name", request.session().attribute("usuario"));
+//			return new ModelAndView(model, "publico/pages/inicio.vm");
 		}, new VelocityTemplateEngine());
 
 		before("/loginFacebook", new SecurityFilter(config, "FacebookClient"));
@@ -144,72 +147,108 @@ public final class Home3 {
 				}, new VelocityTemplateEngine());
 
 		get("/crear-ind",
-				(request, response) -> { Map<String, Object> model = new HashMap<>();
+				(request, response) -> { 
+				Map<String, Object> model = new HashMap<>();
+				model = buildModel(request, response);
 				model.put("guardadoExitoso", true);
 				return new ModelAndView(model, "publico/pages/crear-ind.vm"); // located in the resources directory
 				}, new VelocityTemplateEngine());
 		get("/consultar-ind",
 				(request, response) -> {
-				return new ModelAndView(obtenerDatosParaTablaIndicadores(), "publico/pages/consultar-ind.vm"); // located in the resources directory
+					Map<String, Object> model = new HashMap<>();
+					model.putAll(buildModel(request, response));
+					model.putAll(obtenerDatosParaTablaIndicadores((String) model.get("id")));
+					return new ModelAndView(model, "publico/pages/consultar-ind.vm"); // located in the resources directory
 				}, new VelocityTemplateEngine());
 		get("/crear-met",
-				(request, response) -> { Map<String, Object> model = new HashMap<>();
-				model.put("guardadoExitoso", true);
-				return new ModelAndView(model, "publico/pages/crear-met.vm"); // located in the resources directory
+				(request, response) -> {
+					Map<String, Object> model = new HashMap<>();
+					model.putAll(buildModel(request, response));
+					model.put("guardadoExitoso", true);
+					return new ModelAndView(model, "publico/pages/crear-met.vm"); // located in the resources directory
 				}, new VelocityTemplateEngine());
 		get("/consultar-met",
 				(request, response) -> {
-				return new ModelAndView(obtenerDatosParaTablaMetodologias(), "publico/pages/consultar-met.vm"); // located in the resources directory
+					Map<String, Object> model = new HashMap<>();
+					model.putAll(buildModel(request, response));
+					model.putAll(obtenerDatosParaTablaMetodologias((String) model.get("id")));
+				return new ModelAndView(model, "publico/pages/consultar-met.vm"); // located in the resources directory
 				}, new VelocityTemplateEngine());
 		get("/loginDB", Home3::formulario, new VelocityTemplateEngine());
 		post("/loginDB", Home3::formulario, new VelocityTemplateEngine());
 		get("/logout", new LogoutRoute(config, "/ingreso"));
 		get("/inicio", (request, response) -> {
-			Map<String, Object> model = new HashMap<>();
-			return new ModelAndView(buildModel(request, response), "publico/pages/inicio.vm"); // located in the resources directory
-		}, new VelocityTemplateEngine());
+			return new ModelAndView(buildModel(request, response), "publico/pages/inicio.vm");
+			}, new VelocityTemplateEngine());
+		
 		CallbackRoute callback = new CallbackRoute(config, null, true);
 
 		get("/callback", callback);
 		post("/callback", callback);
 		
 		post("/aplicarMetodologia", (request, response) -> {
-			String datos = request.queryParams("datos").trim();
-		    Map<String, Object> model = new HashMap<>();
-		    model.put("datosTabla", aplicarMetodologia(datos));
-		    model.put("nombreMetodologia", datos);
+			String nombreMetodologia = request.queryParams("datos").trim();
+			Map<String, Object> model = new HashMap<>();
+			model.putAll(buildModel(request, response));
+		    model.put("datosTabla", aplicarMetodologia(nombreMetodologia, (String) model.get("id")));
+		    model.put("titulo", "Resultados aplicación de Metodologìa: " + nombreMetodologia);
+		    return new ModelAndView(model, "publico/pages/resultado-met.vm");
+		}, new VelocityTemplateEngine());
+		
+		post("/aplicarIndicador", (request, response) -> {
+			String nombreIndicador = request.queryParams("datos").trim();
+			Map<String, Object> model = new HashMap<>();
+			model.putAll(buildModel(request, response));
+		    model.put("datosTabla", aplicarIndicador(nombreIndicador, (String) model.get("id")));
+		    model.put("titulo", "Resultados aplicación de Indicador: " + nombreIndicador);
 		    return new ModelAndView(model, "publico/pages/resultado-met.vm");
 		}, new VelocityTemplateEngine());
 		
 		post("/guardarMetodologia", (request, response) -> {
 			String datos = request.queryParams("objTabla[]");
 			String[] datosMetodologia = datos.split(",");
-		    Map<String, Object> model = new HashMap<>();
-		    model.put("guardadoExitoso", crearMetodologia((String)datosMetodologia[0],datosMetodologia[1]));
+			Map<String, Object> model = new HashMap<>();
+			model.putAll(buildModel(request, response));
+		    model.put("guardadoExitoso", crearMetodologia((String)datosMetodologia[0],datosMetodologia[1], (String) model.get("id")));
 		    return new ModelAndView(model, "publico/pages/crear-met.vm");
 		}, new VelocityTemplateEngine());
 		
 		post("/guardar-indicador", (request, response) -> {
 			Map<String, Object> mapDatos =asMap(request.body(),"UTF-8");
-		    Map<String, Object> model = new HashMap<>();
-		    model.put("guardadoExitoso", crearIndicador((String)mapDatos.get("nombre"),(String)mapDatos.get("expresion")));
+			Map<String, Object> model = new HashMap<>();
+			model.putAll(buildModel(request, response));
+		    model.put("guardadoExitoso", crearIndicador((String)mapDatos.get("nombre"),(String)mapDatos.get("expresion"), (String) model.get("id")));
 		    return new ModelAndView(model, "publico/pages/crear-ind.vm");
 		}, new VelocityTemplateEngine());
 		// Manejo de errores de pagina. Using string/html
 		notFound("<html><body><h1>Error 404 no existe la pagina</h1></body></html>");
 	}
 	
-	public static String aplicarMetodologia(String datos) {
+	public static String aplicarMetodologia(String nombreMetodologia, String idUsuario) {
 		EntityManager em = ManejadorPersistencia.INSTANCE.getEntityManager();
-		Metodologia metodologia = em.createQuery("SELECT i FROM Metodologia i where nombre=\'" + datos.trim() + "\'" , Metodologia.class).getResultList().get(0);
+		Metodologia metodologia = em.createQuery("SELECT i FROM Metodologia i where nombre=\'"
+									+ nombreMetodologia.trim()
+									+ "\' and idUsuario=\'"
+									+ idUsuario.trim() + "\'"
+									, Metodologia.class).getResultList().get(0);
 		return metodologia.construirMetodologiaEjecutable().obtenerResultadosParaWeb(); 
 	}
-	private static List<Regla> obtenerListaDeReglas(String cadenaReglas) throws NumberFormatException, ExpresionInvalidaException{
+	
+	public static String aplicarIndicador(String nombreIndicador, String idUsuario) {
+		EntityManager em = ManejadorPersistencia.INSTANCE.getEntityManager();
+		Indicador indicador = em.createQuery("SELECT i FROM Indicador i where nombre=\'IN_"
+									+ nombreIndicador.trim()
+									+ "\' and idUsuario=\'"
+									+ idUsuario.trim() + "\'"
+									, Indicador.class).getResultList().get(0);
+		return indicador.obtenerIndicadorEjecutable().obtenerResultadosParaWeb(); 
+	}
+	private static List<Regla> obtenerListaDeReglas(String cadenaReglas, String idUsuario) throws NumberFormatException, ExpresionInvalidaException{
 		List<Regla> listaReglas = new ArrayList<Regla>();
 		Arrays.asList(cadenaReglas.split("#")).stream().forEach(datos -> {
 			String[] datosRegla = datos.split(":");
 		try {
-			listaReglas.add(Boolean.valueOf(datosRegla[1]) ? new ReglaBooleana(datosRegla[0], Integer.parseInt(datosRegla[2])) : new ReglaPorRatio(datosRegla[0], Integer.parseInt(datosRegla[2])));
+			listaReglas.add(Boolean.valueOf(datosRegla[1]) ? new ReglaBooleana(datosRegla[0], Integer.parseInt(datosRegla[2]), idUsuario) : new ReglaPorRatio(datosRegla[0], Integer.parseInt(datosRegla[2]), idUsuario));
 		} catch (NumberFormatException | ExpresionInvalidaException e) {
 			e.printStackTrace();
 		}
@@ -219,9 +258,11 @@ public final class Home3 {
 		}
 		return listaReglas;
 	}
-	private static Map<String, Object> obtenerDatosParaTablaMetodologias() {
+	private static Map<String, Object> obtenerDatosParaTablaMetodologias(String idUsuario) {
 		EntityManager em = ManejadorPersistencia.INSTANCE.getEntityManager();
-		List<Metodologia> metodologias= em.createQuery("SELECT i FROM Metodologia i", Metodologia.class).getResultList();
+		List<Metodologia> metodologias= em.createQuery("SELECT i FROM Metodologia i where idUsuario='"
+											+ idUsuario + "'"
+											, Metodologia.class).getResultList();
 		String datos="";
 		for (Metodologia m : metodologias){
 			datos = datos.concat("[\""+m.getNombre()+"\",\""+obtenerReglas(m.getReglas())+"\"],");
@@ -242,9 +283,11 @@ public final class Home3 {
 			cadenaDatosReglas= cadenaDatosReglas.substring(0, cadenaDatosReglas.length()-1);
 		return cadenaDatosReglas;
 	}
-	private static Map<String, Object> obtenerDatosParaTablaIndicadores() {
+	private static Map<String, Object> obtenerDatosParaTablaIndicadores(String idUsuario) {
 		EntityManager em = ManejadorPersistencia.INSTANCE.getEntityManager();
-		List<Indicador> indicadores = em.createQuery("SELECT i FROM Indicador i", Indicador.class).getResultList();
+		List<Indicador> indicadores = em.createQuery("SELECT i FROM Indicador i where idUsuario='"
+											+ idUsuario + "'"
+											, Indicador.class).getResultList();
 		String datos="";
 		for (Indicador i : indicadores) {
 			datos = datos.concat("[\""+i.getNombre()+"\",\""+i.getExpresion()+"\"],");
@@ -255,19 +298,19 @@ public final class Home3 {
 		map.put("datosTabla", datos);
 		return map;
 	}
-	private static boolean crearIndicador(String nombre, String expresion) {
-		Map<String, Object> map= new HashMap<>();
+	private static boolean crearIndicador(String nombre, String expresion, String id) {
+//		Map<String, Object> map= new HashMap<>();
 		try {
-			ManejadorPersistencia.persistir(new Indicador().setNombre(nombre).asignarExpresion(expresion));
+			ManejadorPersistencia.persistir(new Indicador().setNombre(nombre).asignarExpresion(expresion).setIdUsuario(id));
 		} catch (Exception e) {
 			return false;
 		}
 		return true;
 	}
-	private static boolean crearMetodologia(String nombre, String reglas) {
-		Map<String, Object> map= new HashMap<>();
+	private static boolean crearMetodologia(String nombre, String reglas, String id) {
+//		Map<String, Object> map= new HashMap<>();
 		try {
-			ManejadorPersistencia.persistir(new Metodologia().setNombre(nombre).setReglas(obtenerListaDeReglas(reglas)));
+			ManejadorPersistencia.persistir(new Metodologia().setNombre(nombre).setReglas(obtenerListaDeReglas(reglas, id)).setIdUsuario(id));
 		} catch (Exception e) {
 			return false;
 		}
@@ -293,7 +336,11 @@ public final class Home3 {
 			return new ModelAndView(map, "publico/pages/login.vm");
 		}
 		Session session = sf.openSession();
-		map.put("name", credentials.getUserProfile().getId());
+		spark.Session sesion = request.session(true);
+		sesion.attribute("usuario", credentials.getUserProfile().getId());
+		sesion.attribute("id",credentials.getUserProfile().getAttribute("nombre"));
+		map.put("sesion", sesion);
+		map.put("usuario", sesion.attribute("usuario"));
 		return new ModelAndView(map, "publico/pages/inicio.vm");
 	}
 	

@@ -232,10 +232,10 @@ extends TestCase
 //		empresa.setNombre("Empresa");
 //		ManejadorPersistencia.persistir(empresa);
 //	}
-	public void testPersistenciaEmpresa()
-	{
-		System.out.println(Home3.aplicarMetodologia("MetodologiaPrueba"));
-	}
+//	public void testPersistenciaEmpresa()
+//	{
+//		System.out.println(Home3.aplicarMetodologia("MetodologiaPrueba"));
+//	}
 	
 //	public void testPersistenciaMetodologia() throws ExpresionInvalidaException
 //	{
